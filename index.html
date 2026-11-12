@@ -87,6 +87,7 @@ h1 em{display:block;font-style:italic;font-size:.46em;color:var(--lamp);margin-t
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .sum{margin-top:14px;font:500 15px/1.3 var(--body)}
 .book .btn{width:100%;margin-top:12px;padding:17px}
+.hero-cta,.book-x{display:none} /* видны только на телефоне в запасном режиме */
 .book .btn:disabled{opacity:.6;cursor:default}
 .form-error{color:#A3261B;font-size:14px;line-height:1.4;margin-top:10px}
 .form-error:empty{display:none}
@@ -262,9 +263,12 @@ dialog::backdrop{background:rgba(4,10,8,.72);backdrop-filter:blur(3px)}
   .book .kicker{display:none}
   .book h2{font-size:26px;margin-bottom:2px}
   .book label{margin-top:6px}
-  /* телефон: форма в потоке страницы, без своей прокрутки, страница листается как обычно */
-  .stage.nogl{height:auto;min-height:100svh;padding:78px 10px 10px;display:flex;flex-direction:column;justify-content:flex-end}
-  .stage.nogl .book{position:relative;left:auto;right:auto;bottom:auto;max-height:none;overflow:visible}
+  /* телефон без 3D: сначала главный экран с кнопкой, форма открывается окном на весь экран */
+  .stage.nogl .title{top:50%;transform:translateY(-50%)}
+  .stage.nogl .hero-cta{display:inline-block;margin-top:32px;padding:18px 30px;pointer-events:auto}
+  .stage.nogl .book{display:none}
+  .stage.nogl .book.open{display:block;position:fixed;z-index:30;inset:0;max-height:none;overflow:auto;overscroll-behavior:contain;padding:56px 20px calc(24px + env(safe-area-inset-bottom));outline-offset:-10px}
+  .stage.nogl .book.open .book-x{display:block;position:absolute;top:10px;right:10px;width:44px;height:44px;border:0;background:none;color:var(--ink);font:300 34px/1 var(--body);cursor:pointer}
   .head{grid-template-columns:1fr}
   .lead{justify-self:start}
   .cards{grid-template-columns:1fr 1fr;gap:8px}
@@ -359,10 +363,12 @@ footer .legal button:hover{color:var(--lamp)}
   <div class="title" id="title">
     <div class="kicker">Новосибирск · Кропоткина, 118</div>
     <h1>Дуплет<em>бар-бильярдная</em></h1>
+    <button class="btn hero-cta" type="button" data-book>Забронировать стол</button>
   </div>
   <button class="hint" id="hint" type="button"><span class="sl">Пришёл на час — пропал до ночи</span>листай</button>
 
   <aside class="book" id="book" aria-label="Бронь стола" inert>
+    <button class="book-x" type="button" aria-label="Закрыть бронь">×</button>
     <div class="kicker">Бронь стола</div>
     <h2>Выберите <em>стол и время</em></h2>
     <form id="book-form" novalidate>
@@ -749,11 +755,19 @@ const goBook=code=>{ if(code) window.duplet?.setTable(code); };
 /* запасной вариант: нет WebGL или не загрузилась библиотека — фото и сразу форма */
 function fallback(){
   stage.classList.add('nogl'); hint.hidden=true; lock(false);
-  title.style.opacity=matchMedia('(max-width:760px)').matches?0:1;
-  if(!matchMedia('(max-width:760px)').matches){ title.style.left='0'; title.style.right='42%'; }
+  const phone=matchMedia('(max-width:760px)');
+  title.style.opacity=1;
+  if(!phone.matches){ title.style.left='0'; title.style.right='42%'; }
   book.inert=false; book.style.opacity=1; book.classList.add('on');
+  /* телефон: форма открывается окном поверх страницы */
+  let opener=null;
+  const closeSheet=()=>{ if(!book.classList.contains('open')) return; book.classList.remove('open'); lock(false); opener?.focus({preventScroll:true}); };
+  book.querySelector('.book-x').addEventListener('click',closeSheet);
+  addEventListener('keydown',e=>{ if(e.key==='Escape') closeSheet(); });
   document.querySelectorAll('[data-book]').forEach(b=>b.addEventListener('click',()=>{
-    goBook(b.dataset.book); scrollTo({top:0,behavior:'smooth'}); setTimeout(()=>document.getElementById('f-name').focus({preventScroll:true}),500); }));
+    goBook(b.dataset.book);
+    if(phone.matches){ opener=b; book.classList.add('open'); book.scrollTop=0; lock(true); book.querySelector('.book-x').focus({preventScroll:true}); return; }
+    scrollTo({top:0,behavior:'smooth'}); setTimeout(()=>document.getElementById('f-name').focus({preventScroll:true}),500); }));
 }
 let THREE, RoomEnvironment, giveUp;
 /* библиотека грузится долго или не грузится: через 4 с, а также по клику на «Забронировать» или «листай», включаем запасной вариант */
