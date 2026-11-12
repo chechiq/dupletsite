@@ -262,6 +262,9 @@ dialog::backdrop{background:rgba(4,10,8,.72);backdrop-filter:blur(3px)}
   .book .kicker{display:none}
   .book h2{font-size:26px;margin-bottom:2px}
   .book label{margin-top:6px}
+  /* телефон: форма в потоке страницы, без своей прокрутки, страница листается как обычно */
+  .stage.nogl{height:auto;min-height:100svh;padding:78px 10px 10px;display:flex;flex-direction:column;justify-content:flex-end}
+  .stage.nogl .book{position:relative;left:auto;right:auto;bottom:auto;max-height:none;overflow:visible}
   .head{grid-template-columns:1fr}
   .lead{justify-self:start}
   .cards{grid-template-columns:1fr 1fr;gap:8px}
