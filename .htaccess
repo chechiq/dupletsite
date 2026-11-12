@@ -1,0 +1,19 @@
+# Springhost (Apache). Положить рядом с index.html.
+AddDefaultCharset utf-8
+AddType text/javascript .js .mjs
+AddType font/woff .woff
+AddType font/woff2 .woff2
+AddType image/webp .webp
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType font/woff "access plus 1 month"
+  ExpiresByType font/woff2 "access plus 1 month"
+  ExpiresByType text/javascript "access plus 1 month"
+</IfModule>

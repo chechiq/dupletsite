@@ -1,0 +1,1205 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Дуплет — бар-бильярдная в Новосибирске, Кропоткина, 118</title>
+<meta name="description" content="Бильярд, шашлык и чай на Кропоткина, 118. Два стола для русского бильярда, американка и комната «Люкс». Бронь стола онлайн, каждый день до 01:00.">
+<meta name="theme-color" content="#0D1B18">
+<meta property="og:title" content="Дуплет — бар-бильярдная в Новосибирске">
+<meta property="og:description" content="Русский бильярд, американка и комната «Люкс». Бронь стола онлайн.">
+<meta property="og:image" content="img/g/hero.webp">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%230A1C17%27/%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2710%27 fill=%27%237A1F2B%27/%3E%3Ccircle cx=%2713%27 cy=%2713%27 r=%272.6%27 fill=%27%23F4F0E8%27 opacity=%27.85%27/%3E%3C/svg%3E">
+<link rel="preload" href="img/g/hero.webp" as="image" type="image/webp">
+<script>/* three.js заранее грузим только на компе и планшете, телефону он не нужен */ if(matchMedia('(min-width:761px)').matches){const l=document.createElement('link');l.rel='modulepreload';l.href='vendor/three.module.min.js';document.head.appendChild(l);}</script>
+<link rel="preload" href="fonts/golos-text.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="fonts/unbounded.woff" as="font" type="font/woff" crossorigin>
+<style>
+@font-face{font-family:"Martian Mono";src:url(fonts/martian-mono.woff) format("woff");font-weight:100 800;font-stretch:75% 112.5%;font-display:swap}
+@font-face{font-family:"Golos Text";src:url(fonts/golos-text.woff) format("woff");font-weight:400 900;font-display:swap}
+@font-face{font-family:"Unbounded";src:url(fonts/unbounded.woff) format("woff");font-weight:200 900;font-display:swap}
+:root{
+  --night:#0A1C17; --night-2:#0F2A22; --em:#23956F; --felt:#0E6E5E; --lamp:#D9A441; --gold:#A9772A;
+  --cream:#F4F0E8; --ink:#22302B; --mute:#6B766F; --chalk:#EDF1EC; --chalk-dim:#A9B8B2;
+  --serif:"Martian Mono",ui-monospace,monospace; --brand:"Unbounded","Martian Mono",system-ui,sans-serif; --hand:"Martian Mono",ui-monospace,monospace; --body:"Golos Text",system-ui,sans-serif;
+  --pad:clamp(16px,5vw,72px);
+}
+*{box-sizing:border-box;margin:0}
+html{background:var(--night);scroll-behavior:smooth}
+body{background:var(--night);color:var(--chalk);font:400 16px/1.6 var(--body);overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--lamp);outline-offset:3px;border-radius:3px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--lamp);color:var(--night);padding:8px 14px;z-index:99}
+.skip:focus{left:8px}
+
+/* ---------- шапка ---------- */
+.nav{position:fixed;z-index:20;top:0;left:0;right:0;display:flex;align-items:center;gap:28px;
+  padding:18px var(--pad);transition:background .35s,padding .35s}
+.nav.solid{background:rgba(9,18,16,.92);backdrop-filter:blur(8px);padding-top:12px;padding-bottom:12px}
+.logo{font:500 17px/1 var(--brand);letter-spacing:.16em;text-transform:uppercase;text-decoration:none;margin-right:auto;display:inline-block;padding-block:14px;margin-block:-14px}
+.logo i{color:var(--em);font-style:normal}
+.nav nav{display:flex;gap:26px}
+.nav nav a,.nav .tel{display:inline-block;padding-block:16px;margin-block:-16px;font:500 12px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:rgba(237,241,236,.82)}
+.nav nav a:hover,.nav .tel:hover{color:var(--lamp)}
+.btn{font:500 12px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--night);
+  background:var(--lamp);padding:15px 24px;border-radius:999px;border:0;cursor:pointer;text-decoration:none;display:inline-block;
+  transition:transform .2s,background .2s;min-height:44px}
+.btn:hover{background:#E6B658;transform:translateY(-1px)}
+.btn.ghost{background:transparent;color:inherit;box-shadow:inset 0 0 0 1px currentColor}
+.btn.ghost:hover{background:rgba(217,164,65,.14)}
+
+/* ---------- первый экран: 3D-стол ---------- */
+.stage{position:relative;height:100vh;height:100svh;overflow:hidden;background:#050B0A} /* фото только у запасного экрана (.nogl), чтобы перед 3D не мелькало */
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.stage.nogl{background:#050B0A url(img/g/hero.webp) center/cover}
+.stage.nogl canvas{display:none}
+.vignette{position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 45%,transparent 48%,rgba(4,10,8,.7) 100%)}
+.stage.nogl .vignette{background:rgba(4,10,8,.6)}
+.title{position:absolute;left:0;right:0;top:36%;transform:translateY(-58%);text-align:center;padding:0 16px;
+  pointer-events:none;will-change:opacity,transform}
+.kicker{font:500 12px/1 var(--body);letter-spacing:.3em;text-transform:uppercase;color:var(--lamp);margin-bottom:22px}
+h1{font:400 clamp(60px,11vw,160px)/.9 var(--serif);letter-spacing:-.01em;text-shadow:0 6px 40px rgba(0,0,0,.55)}
+h1 em{display:block;font-style:italic;font-size:.46em;color:var(--lamp);margin-top:.12em}
+.hint .sl{position:relative;padding-bottom:10px;font:600 clamp(26px,2.8vw,38px)/1 var(--hand);letter-spacing:0;text-transform:none;color:var(--chalk);text-shadow:0 2px 14px rgba(0,0,0,.85);margin-bottom:6px}
+@media (max-height:780px){.title{top:39%}h1{font-size:clamp(56px,9.4vw,128px)}.kicker{margin-bottom:14px}}
+.title p{margin:22px auto 0;max-width:460px;color:rgba(237,241,236,.85);text-shadow:0 2px 14px rgba(0,0,0,.8)}
+.hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);font:500 11px/1 var(--body);background:none;border:0;cursor:pointer;
+  letter-spacing:.3em;text-transform:uppercase;color:rgba(237,241,236,.8);display:flex;flex-direction:column;align-items:center;gap:12px;padding:10px 16px}
+.hint[hidden]{display:none}
+.hint::after{content:"";width:1px;height:40px;background:linear-gradient(var(--lamp),transparent);animation:drip 1.8s ease-in-out infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ---------- бронь ---------- */
+.book{position:absolute;z-index:4;right:var(--pad);top:calc(50% + 24px);width:min(410px,35vw);max-height:calc(100svh - 110px);overflow:auto;
+  background:var(--cream);color:var(--ink);padding:28px 30px 22px;opacity:0;pointer-events:none;
+  transform:translateY(-50%);box-shadow:0 30px 80px rgba(0,0,0,.5);outline:1px solid rgba(255,255,255,.55);outline-offset:-7px}
+.book.on{pointer-events:auto}
+.book .kicker{color:var(--gold);margin-bottom:10px;letter-spacing:.26em}
+.book h2{font:400 clamp(28px,2.7vw,40px)/1 var(--serif);margin-bottom:10px}
+.book h2 em{font-style:italic;color:var(--gold)}
+.book label{display:block;font:500 10px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin:12px 0 2px}
+.book input,.book select{width:100%;font:400 16px/1.3 var(--body);color:var(--ink);background:transparent;border:0;
+  border-bottom:1px solid #BDB3A4;padding:6px 0;border-radius:0;outline:0;min-height:44px}
+.book input:focus,.book select:focus{border-bottom-color:var(--gold)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.sum{margin-top:14px;font:500 15px/1.3 var(--body)}
+.book .btn{width:100%;margin-top:12px;padding:17px}
+.book .btn:disabled{opacity:.6;cursor:default}
+.form-error{color:#A3261B;font-size:14px;line-height:1.4;margin-top:10px}
+.form-error:empty{display:none}
+.form-done{background:#E3EBDD;border-left:3px solid var(--felt);padding:12px 14px;margin-top:12px;font-size:14px;line-height:1.5;white-space:pre-line}
+.book small{display:block;margin-top:12px;font-size:12px;line-height:1.5;color:var(--mute)}
+.book small a{color:var(--ink);display:inline-block;padding-block:14px;margin-block:-14px}
+
+/* ---------- общие блоки ---------- */
+section.s{padding:clamp(56px,6.7vw,96px) var(--pad);position:relative}
+.dark{background:var(--night-2);color:var(--chalk)}
+.light{background:var(--cream);color:var(--ink)}
+.wrap{max-width:1240px;margin:0 auto}
+.head{display:grid;grid-template-columns:1.1fr 1fr;gap:24px 48px;align-items:end;margin-bottom:clamp(24px,2.8vw,40px)}
+.eyebrow{display:flex;align-items:center;gap:14px;font:500 12px/1 var(--body);letter-spacing:.3em;text-transform:uppercase;color:var(--lamp);margin-bottom:22px}
+.eyebrow::before{content:"";width:44px;height:2px;border-radius:2px;background:var(--em)}
+.light .eyebrow{color:var(--gold)}
+.h2{font:400 clamp(44px,6.4vw,92px)/.95 var(--serif);letter-spacing:-.01em}
+.h2 em{font-style:italic;display:block}
+.light .h2{color:var(--gold)}
+.lead{max-width:440px;font-size:17px;line-height:1.65;color:var(--chalk-dim);justify-self:center}
+.h2+.lead{margin-top:18px;justify-self:start}
+.light .lead{color:#4A5650}
+
+/* карточки-фото как в референсе */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.card{position:relative;aspect-ratio:3/4.2;overflow:hidden;background:#0A1512;color:var(--chalk)}
+.card img{width:100%;height:100%;object-fit:cover;transform:scale(1.14);transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
+.in .card img,.card.in img{transform:scale(1)}
+.card:hover img{transform:scale(1.06)}
+.card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,14,12,0) 38%,rgba(6,14,12,.9) 100%)}
+.card div{position:absolute;z-index:1;left:22px;right:18px;bottom:22px}
+.card b{display:block;font:400 clamp(40px,4.6vw,66px)/1 var(--serif)}
+.card b small{font-size:.5em}
+.card span{display:block;margin-top:8px;font-size:14px;color:rgba(237,241,236,.82)}
+.card h3{font:400 clamp(26px,2.5vw,36px)/1.05 var(--serif)}
+.card i{display:block;margin-top:10px;font:500 12px/1 var(--body);font-style:normal;letter-spacing:.14em;text-transform:uppercase;color:var(--lamp)}
+.card p{margin-top:8px;font-size:14px;line-height:1.45;color:rgba(237,241,236,.82)}
+
+/* цены */
+.prices{background:#0A1512 url(img/g/hero.webp) center 30%/cover;color:var(--chalk);isolation:isolate}
+.prices::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,var(--cream) 0,var(--cream) clamp(230px,21vw,300px),rgba(241,233,223,0) calc(clamp(230px,21vw,300px) + 180px)),linear-gradient(180deg,rgba(8,16,14,.2),rgba(8,16,14,.82))}
+.prices .h2{color:var(--gold)} .prices .eyebrow{color:var(--gold)} .prices .lead{color:#4A5650}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:clamp(64px,7vw,104px)}
+.plan{padding:34px 28px 30px;text-align:center;background:rgba(18,32,28,.72);backdrop-filter:blur(10px);outline:1px solid rgba(255,255,255,.22);outline-offset:-6px;display:flex;flex-direction:column}
+.plan.hot{background:var(--cream);color:var(--ink);outline-color:rgba(169,119,42,.4)}
+.plan .tag{display:flex;align-items:center;justify-content:center;gap:12px;font:500 11px/1 var(--body);letter-spacing:.24em;text-transform:uppercase}
+.plan .tag::before,.plan .tag::after{content:"";width:28px;height:1px;background:currentColor;opacity:.5}
+.plan .price{font:400 clamp(54px,5.4vw,78px)/1 var(--serif);margin:18px 0 4px}
+.plan .price small{font-size:.42em;margin-left:.16em}
+.plan .per{font-size:13px;opacity:.7}
+.plan ul{list-style:none;padding:0;margin:20px 0 26px;font-size:15px;line-height:1.5;flex:1}
+.plan li{margin:7px 0}
+.plan li::before{content:"✓ ";color:var(--lamp)}
+.plan.hot li::before{color:var(--gold)}
+.plan .btn{align-self:center}
+.plan:not(.hot) .btn{background:rgba(255,255,255,.14);color:var(--chalk)}
+.plan:not(.hot) .btn:hover{background:rgba(255,255,255,.24)}
+.extras{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px 34px;justify-content:center;font-size:15px;color:rgba(237,241,236,.9)}
+.extras b{font:500 22px/1 var(--serif);color:var(--lamp);margin-left:8px}
+
+/* бар */
+.bar-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:clamp(24px,5vw,72px);align-items:start}
+.shots{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.shots figure{margin:0;overflow:hidden;background:#0A1512}
+.shots figure:first-child{grid-column:1/-1;aspect-ratio:16/10}
+.shots figure{aspect-ratio:1}
+.shots img{width:100%;height:100%;object-fit:cover;transform:scale(1.12);transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
+.in .shots img,.shots.in img{transform:scale(1)}
+@media (min-width:761px){
+  .bar-grid{align-items:stretch}
+  .shots{grid-template-rows:minmax(0,1.5fr) minmax(0,1fr)}
+  .shots figure,.shots figure:first-child{aspect-ratio:auto;min-height:0}
+  .shots figure{position:relative}
+  .shots img{position:absolute;inset:0}
+}
+@media (max-width:760px){
+  .menu li{flex-wrap:wrap;gap:4px 12px}
+  .menu b{flex:1 1 0;min-width:0}
+  .menu em{order:2}
+  .menu span{order:3;flex-basis:100%}
+  .menu u{display:none}
+}
+.menu{list-style:none;padding:0}
+.menu li{display:flex;align-items:baseline;gap:12px;padding:15px 0;border-bottom:1px solid rgba(237,241,236,.14)}
+.menu b{font:400 24px/1.15 var(--serif)}
+.menu span{font-size:13px;color:var(--chalk-dim)}
+.menu u{flex:1;border-bottom:1px dotted rgba(237,241,236,.3);transform:translateY(-4px);text-decoration:none}
+.menu em{font:500 20px/1 var(--serif);font-style:normal;color:var(--lamp);white-space:nowrap}
+.note{margin-top:18px;font-size:14px;color:var(--chalk-dim)}
+.actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px;align-items:center}
+
+/* отзывы */
+.quote{font:400 clamp(34px,5vw,72px)/1.05 var(--serif);font-style:italic;max-width:980px}
+.quote span{color:var(--lamp)}
+.qsrc{margin-top:18px;font-size:14px;color:var(--chalk-dim)}
+.revs{display:grid;grid-template-columns:auto repeat(3,1fr);gap:clamp(20px,3vw,44px);margin-top:clamp(40px,6vw,80px);align-items:start}
+.rate b{display:block;font:400 clamp(64px,7vw,104px)/.9 var(--serif);color:var(--lamp)}
+.rate span{display:block;margin-top:10px;font-size:14px;color:var(--chalk-dim);max-width:160px}
+.rev{border-top:1px solid rgba(237,241,236,.2);padding-top:18px}
+.rev p{font-size:16px;line-height:1.6}
+.rev cite{display:block;margin-top:12px;font-style:normal;font-size:13px;color:var(--chalk-dim)}
+
+/* как найти */
+.find{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(24px,5vw,72px);align-items:stretch}
+.addr{font:400 clamp(34px,3.6vw,52px)/1.05 var(--serif)}
+.find p{margin-top:14px;color:#4A5650;max-width:460px}
+.hours{margin-top:26px;border-top:1px solid #D2C8BA}
+.hours div{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #D2C8BA}
+.hours b{font-weight:500}
+.hours .on b::after{content:" · сегодня";color:var(--gold);font-weight:400}
+.status{display:inline-flex;align-items:center;gap:10px;margin-top:20px;font-weight:500}
+.status i{width:9px;height:9px;border-radius:50%;background:#B9AFA0}
+.status i.open{background:#1F9D6B;box-shadow:0 0 0 5px rgba(31,157,107,.18)}
+.rules{list-style:none;padding:0;margin-top:26px;font-size:14px;color:#4A5650}
+.rules li{margin:6px 0;padding-left:18px;position:relative}
+.rules li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:1px;background:var(--gold)}
+.map{min-height:420px;border:0;width:100%;height:100%;filter:grayscale(.35) contrast(1.05)}
+.mapbox{outline:1px solid #D2C8BA;outline-offset:6px;background:#DDD3C5}
+
+/* подвал */
+footer{background:#08110F;color:var(--chalk-dim);padding:56px var(--pad) 96px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:24px 56px;align-items:end;justify-content:space-between}
+footer .big{font:400 clamp(34px,4vw,56px)/1 var(--serif);color:var(--chalk)}
+footer .big em{color:var(--lamp)}
+footer nav{display:flex;flex-wrap:wrap;gap:10px 26px}
+footer a{text-decoration:none;font-size:15px;display:inline-flex;align-items:center;min-height:44px}
+footer a:hover{color:var(--lamp)}
+footer p{width:100%;font-size:13px;opacity:.7}
+
+/* мобильная панель */
+.dock{position:fixed;z-index:19;left:0;right:0;bottom:0;display:none;gap:8px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+  background:rgba(9,18,16,.94);backdrop-filter:blur(8px);transform:translateY(110%);transition:transform .3s}
+.dock.show{transform:none}
+.dock .btn{flex:1;text-align:center;padding:16px 10px}
+
+/* меню-диалог */
+dialog{border:0;padding:0;background:var(--cream);color:var(--ink);width:min(760px,calc(100vw - 24px));max-height:min(86vh,900px);margin:auto}
+dialog::backdrop{background:rgba(4,10,8,.72);backdrop-filter:blur(3px)}
+.dlg-head{display:flex;align-items:center;justify-content:space-between;padding:22px 28px 0}
+.dlg-head h2{font:400 40px/1 var(--serif);color:var(--gold)}
+.x{background:none;border:0;font:400 34px/1 var(--serif);cursor:pointer;color:var(--ink);width:44px;height:44px}
+.tabs{display:flex;gap:6px;padding:16px 28px 0;overflow:auto;border-bottom:1px solid #D2C8BA}
+.tabs button{font:500 12px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;background:none;border:0;padding:14px 12px;cursor:pointer;color:var(--mute);border-bottom:2px solid transparent;white-space:nowrap;min-height:44px}
+.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--gold)}
+.dlg-body{overflow:auto;max-height:calc(min(86vh,900px) - 150px);padding:8px 28px 28px}
+.dlg-body h3{font:400 28px/1 var(--serif);font-style:italic;color:var(--gold);margin:24px 0 6px}
+.dlg-body .ln{display:flex;align-items:baseline;gap:10px;padding:8px 0;border-bottom:1px solid #E0D7CA}
+.dlg-body .ln span{flex:1}
+.dlg-body .ln small{color:var(--mute);margin-left:8px}
+.dlg-body .ln b{font-weight:500;white-space:nowrap}
+.dlg-body p{font-size:14px;color:var(--mute);margin:10px 0}
+
+/* появление при прокрутке */
+.rv{opacity:0;transform:translateY(34px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.rv.in{opacity:1;transform:none}
+.cards.rv,.shots.rv,.plans.rv{opacity:1;transform:none}
+.cards .card,.plans .plan{opacity:0;transform:translateY(46px);transition:opacity .9s ease,transform 1s cubic-bezier(.2,.7,.2,1)}
+.cards.in .card,.plans.in .plan{opacity:1;transform:none}
+.cards .card:nth-child(2),.plans .plan:nth-child(2){transition-delay:.12s}
+.cards .card:nth-child(3),.plans .plan:nth-child(3){transition-delay:.24s}
+.cards .card:nth-child(4){transition-delay:.36s}
+
+@media (max-width:1000px){
+  .nav nav{display:none}
+  .revs{grid-template-columns:1fr 1fr}
+}
+@media (max-width:760px){
+  .nav .tel{display:none}
+  .nav{padding:14px 16px}
+  .nav .btn{padding:13px 18px}
+  .title p{font-size:15px}
+  .book{left:10px;right:10px;top:auto;bottom:10px;width:auto;transform:none;padding:16px 20px 12px;max-height:80svh}
+  .book .kicker{display:none}
+  .book h2{font-size:26px;margin-bottom:2px}
+  .book label{margin-top:6px}
+  .head{grid-template-columns:1fr}
+  .lead{justify-self:start}
+  .cards{grid-template-columns:1fr 1fr;gap:8px}
+  .card div{left:14px;right:12px;bottom:14px}
+  .plans{grid-template-columns:1fr;margin-top:64px}
+  .bar-grid,.find{grid-template-columns:1fr}
+  .revs{grid-template-columns:1fr}
+  .map{min-height:320px}
+  .dock{display:flex}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .rv,.cards .card,.plans .plan,.card img,.shots img{transition:none;opacity:1;transform:none}
+  .hint::after{animation:none}
+}
+/* фирменные штрихи из графики клуба: широкий гротеск в названии, рукописные акценты, изумрудная линия */
+h1{font:500 clamp(40px,8.4vw,128px)/1 var(--brand);letter-spacing:.08em;text-transform:uppercase}
+h1 em{font:500 clamp(11px,1.15vw,15px)/1 var(--body);font-style:normal;letter-spacing:.62em;text-transform:uppercase;color:var(--chalk);margin-top:1.8em;padding-left:.62em}
+@media (max-height:780px){h1{font-size:clamp(38px,7.4vw,104px)}}
+.hint .sl::after{content:"";position:absolute;left:8%;right:8%;bottom:0;height:3px;border-radius:3px;background:var(--em);transform:rotate(-1.2deg)}
+footer .big em{font-family:var(--hand);font-style:normal;font-weight:600;color:var(--em)}
+.status i.open{background:var(--em)}
+/* шрифты: Martian Mono — заголовки и цифры, Golos — текст, Unbounded — только «ДУПЛЕТ» */
+.h2,.book h2,.card b,.card h3,.plan .price,.extras b,.menu em,.rate b,.addr,footer .big,.dlg-head h2,.dlg-body h3,.hint .sl{font-weight:700;font-stretch:112.5%;font-style:normal;letter-spacing:-.03em;word-spacing:-.35em}
+.h2{font-size:clamp(36px,5.2vw,76px);line-height:1}
+.h2 em{font-style:normal}
+.book h2{font-size:clamp(22px,2.1vw,30px);line-height:1.1}
+.card h3{font-size:clamp(18px,1.7vw,24px);line-height:1.1}
+.card b{font-size:clamp(34px,3.8vw,54px)}
+.plan .price{font-size:clamp(46px,4.8vw,70px);letter-spacing:-.05em}
+.extras b{font-size:19px;font-weight:600}
+.menu em{font-size:17px;font-weight:600;letter-spacing:-.02em}
+.menu b{font:500 18px/1.25 var(--body)}
+.rate b{font-size:clamp(52px,5.6vw,84px)}
+.addr{font-size:clamp(28px,3vw,44px);line-height:1.1}
+footer .big{font-size:clamp(26px,3vw,42px);line-height:1.1}
+.dlg-head h2{font-size:32px}
+.dlg-body h3{font-size:20px}
+.hint .sl{font-size:clamp(17px,1.7vw,22px);font-weight:600;line-height:1.2}
+.quote{font:500 clamp(24px,3.2vw,44px)/1.2 var(--body);font-style:normal;letter-spacing:-.01em}
+.x{font-family:var(--body)}
+.cm{margin-left:-.25em}
+footer .big em{margin-left:-.25em}
+.book h2 em{font-style:normal}
+.rate .star{display:inline-block;width:.66em;height:.66em;fill:currentColor;vertical-align:-.02em;margin-right:.14em}
+.rate b .cm{display:inline;margin:0 .04em 0 -.02em;font-family:var(--body);font-weight:800;font-size:inherit;color:inherit;max-width:none}
+/* юридическое: согласие, схема вместо карты, реквизиты, cookie */
+.book label.agree{display:flex;gap:10px;align-items:flex-start;margin:14px 0 0;font:400 13px/1.4 var(--body);letter-spacing:0;text-transform:none;color:var(--ink);cursor:pointer}
+.book .agree input{flex:none;width:20px;height:20px;margin:0;padding:0;border:0;accent-color:var(--felt);cursor:pointer}
+.book .agree a{color:var(--ink)}
+.mapcard{position:relative;overflow:hidden;filter:none}
+.mapcard svg{position:absolute;inset:0;width:100%;height:100%}
+.mapcap{position:absolute;left:18px;right:18px;bottom:18px;background:var(--cream);color:var(--ink);padding:14px 16px;display:flex;flex-direction:column;gap:2px;font-size:14px}
+.mapcap b{font:700 18px/1.2 var(--serif);font-stretch:112.5%;letter-spacing:-.03em;word-spacing:-.35em}
+footer .legal{width:100%;border-top:1px solid rgba(237,241,236,.12);padding-top:18px;display:flex;flex-wrap:wrap;gap:6px 26px;align-items:center;justify-content:space-between}
+footer .legal .todo{width:auto;opacity:1;color:#1A1206;background:var(--lamp);padding:6px 10px;font-size:13px}
+footer .legal nav{gap:0 22px}
+footer .legal a,footer .legal button{font:400 13px/1.3 var(--body);color:var(--chalk-dim);background:none;border:0;padding:0;cursor:pointer;min-height:44px;display:inline-flex;align-items:center}
+footer .legal button:hover{color:var(--lamp)}
+.cookie{position:fixed;z-index:60;left:12px;right:12px;bottom:12px;max-width:640px;margin-inline:auto;max-height:calc(100svh - 24px);overflow:auto;background:#0F2A22;color:var(--chalk);border:1px solid rgba(237,241,236,.18);padding:18px 20px;font-size:14px;line-height:1.5;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+.cookie[hidden],.cookie [hidden]{display:none}
+.cookie h2{font:700 16px/1.3 var(--body);margin-bottom:6px;letter-spacing:0;word-spacing:0}
+.cookie p{color:var(--chalk-dim)}
+.cookie a{color:var(--chalk)}
+.ck-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.cookie .btn{flex:1 1 160px;padding:13px 14px;min-height:44px}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"EntertainmentBusiness","name":"Дуплет","description":"Бар-бильярдная: русский бильярд, американка, комната «Люкс».","image":"img/g/hero.webp","telephone":"+7 913 772-XX-XX","address":{"@type":"PostalAddress","streetAddress":"ул. Кропоткина, 118, цокольный этаж","addressLocality":"Новосибирск","addressCountry":"RU"},"geo":{"@type":"GeoCoordinates","latitude":55.055767,"longitude":82.929673},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"17:00","closes":"01:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":["Saturday","Sunday"],"opens":"15:00","closes":"01:00"}],"sameAs":["https://t.me/duplet_nsk","https://2gis.ru/novosibirsk/firm/141265769932277"]}
+</script>
+</head>
+<body>
+<a class="skip" href="#tables">Перейти к содержанию</a>
+
+<header class="nav" id="nav">
+  <a class="logo" href="#top" aria-label="Дуплет, в начало">Дуплет<i>.</i></a>
+  <nav aria-label="Разделы">
+    <a href="#tables">Столы и цены</a>
+    <a href="#bar">Бар и кухня</a>
+    <a href="#occasions">Вечера</a>
+    <a href="#find">Как найти</a>
+  </nav>
+  <a class="tel" href="tel:+7913772">+7 913 772-XX-XX</a>
+  <button class="btn" type="button" data-book>Забронировать</button>
+</header>
+
+<main>
+<!-- ============ первый экран ============ -->
+<section class="stage" id="top" aria-label="Дуплет: бронь стола">
+  <canvas id="c" aria-hidden="true"></canvas>
+  <div class="vignette"></div>
+  <div class="title" id="title">
+    <div class="kicker">Новосибирск · Кропоткина, 118</div>
+    <h1>Дуплет<em>бар-бильярдная</em></h1>
+  </div>
+  <button class="hint" id="hint" type="button"><span class="sl">Пришёл на час — пропал до ночи</span>листай</button>
+
+  <aside class="book" id="book" aria-label="Бронь стола" inert>
+    <div class="kicker">Бронь стола</div>
+    <h2>Выберите <em>стол и время</em></h2>
+    <form id="book-form" novalidate>
+      <label for="f-table">Стол</label>
+      <select id="f-table" name="table">
+        <option value="russian">Русский бильярд — 600 ₽/ч</option>
+        <option value="pool">Американка — 500 ₽/ч</option>
+        <option value="vip">Люкс — 800 ₽/ч</option>
+      </select>
+      <div class="row">
+        <div><label for="f-date">Дата</label><input id="f-date" name="date" type="date"></div>
+        <div><label for="f-time">Время</label><select id="f-time" name="time"></select></div>
+      </div>
+      <div class="row">
+        <div><label for="f-hours">Сколько часов</label><select id="f-hours" name="hours"><option>1</option><option selected>2</option><option>3</option><option>4</option></select></div>
+        <div><label for="f-guests">Гостей</label><input id="f-guests" name="guests" type="number" min="1" max="10" value="2" inputmode="numeric"></div>
+      </div>
+      <div class="row">
+        <div><label for="f-name">Имя</label><input id="f-name" name="name" type="text" autocomplete="name"></div>
+        <div><label for="f-phone">Телефон</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+7"></div>
+      </div>
+      <div class="hp" aria-hidden="true"><label for="f-website">Сайт</label><input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+      <label class="agree" for="f-consent"><input id="f-consent" name="consent" type="checkbox"><span>Даю <a href="consent.html" target="_blank">согласие на обработку персональных данных</a></span></label>
+      <div class="sum" id="sum"></div>
+      <button class="btn" type="submit" id="book-submit">Забронировать</button>
+      <div class="form-error" id="form-error" role="alert"></div>
+      <div class="form-done" id="form-done" role="status" hidden></div>
+      <small>В списке только свободное время. Удобнее голосом — <a href="tel:+7913772">+7 913 772-XX-XX</a>. Как мы храним данные, написано в <a href="policy.html" target="_blank">политике</a>.</small>
+    </form>
+  </aside>
+</section>
+
+<!-- ============ столы и цены ============ -->
+<section class="s prices" id="tables">
+  <div class="wrap">
+    <div class="head rv">
+      <div>
+        <h2 class="h2"><em>Час</em>игры</h2>
+        <p class="lead">На выходные столы лучше бронировать заранее.</p>
+      </div>
+    </div>
+    <div class="plans rv">
+      <article class="plan">
+        <div class="tag">Американка</div>
+        <div class="price">500<small>₽</small></div><div class="per">за час</div>
+        <ul><li>Один стол</li><li>Заказ из бара к столу</li></ul>
+        <button class="btn" type="button" data-book="pool">Забронировать</button>
+      </article>
+      <article class="plan hot">
+        <div class="tag">Русский бильярд</div>
+        <div class="price">600<small>₽</small></div><div class="per">за час</div>
+        <ul><li>Два стола, 10 футов</li><li>Заказ из бара к столу</li></ul>
+        <button class="btn" type="button" data-book="russian">Забронировать</button>
+      </article>
+      <article class="plan">
+        <div class="tag">Люкс</div>
+        <div class="price">800<small>₽</small></div><div class="per">за час</div>
+        <ul><li>Отдельная комната со своим столом</li><li>Для своей компании</li><li>Подходит для дней рождения</li></ul>
+        <button class="btn" type="button" data-book="vip">Забронировать</button>
+      </article>
+    </div>
+    <div class="extras rv"><span>Нарды, шахматы <b>200 ₽ / час</b></span></div>
+  </div>
+</section>
+
+<!-- ============ бар и кухня ============ -->
+<section class="s dark" id="bar">
+  <div class="wrap">
+    <div class="head rv">
+      <div>
+        <h2 class="h2"><em>Бар</em>и кухня</h2>
+      </div>
+    </div>
+    <div class="bar-grid">
+      <div class="shots rv">
+        <figure><img src="img/g/shashlik.webp" width="720" height="720" decoding="async" alt="Шашлык с гриля" loading="lazy"></figure>
+        <figure><img src="img/g/bar.webp" width="960" height="720" decoding="async" alt="Барная стойка с холодильником и кранами" loading="lazy" style="object-position:35% 50%"></figure>
+        <figure><img src="img/lamp-flower.webp" width="1280" height="720" decoding="async" alt="Настенная лампа над столиком с лавандой" loading="lazy"></figure>
+      </div>
+      <div class="rv">
+        <ul class="menu">
+          <li><b>Шашлык из свинины</b><span>с гриля</span><u></u><em>500 ₽</em></li>
+          <li><b>Шашлык из филе утки</b><span>с гриля</span><u></u><em>500 ₽</em></li>
+          <li><b>Луковые кольца</b><span>150 г, с соусом</span><u></u><em>200 ₽</em></li>
+          <li><b>Сырные палочки</b><span>200 г</span><u></u><em>350 ₽</em></li>
+          <li><b>Манты</b><span>5 штук</span><u></u><em>450 ₽</em></li>
+          <li><b>Масала</b><span>индийский чай с пряностями, 0,8 л</span><u></u><em>300 ₽</em></li>
+          <li><b>Облепиховый характер</b><span>чай, 0,8 л</span><u></u><em>300 ₽</em></li>
+          <li><b>Разливное пиво</b><span>0,5 л</span><u></u><em>270 ₽</em></li>
+        </ul>
+        <p class="note">К любому чаю приносим сушки бесплатно. Оплата картой, наличными или по <span style="white-space:nowrap">QR-коду</span>. Алкоголь продаём гостям старше 18 лет.</p>
+        <div class="actions"><button class="btn" type="button" id="open-menu">Открыть меню</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ вечера ============ -->
+<section class="s light" id="occasions">
+  <div class="wrap">
+    <div class="head rv">
+      <div>
+        <h2 class="h2"><em>Вечера</em>и праздники</h2>
+      </div>
+    </div>
+    <div class="cards rv">
+      <article class="card"><img src="img/g/atm-corner.webp" width="576" height="720" decoding="async" alt="Столик с лавандой у стены в рейках" loading="lazy"><div><h3>Мафия</h3><i>вход 300 ₽</i></div></article>
+      <article class="card"><img src="img/hall-long.webp" width="1280" height="720" decoding="async" alt="Зал клуба вечером" loading="lazy"><div><h3>Живая музыка</h3><i>по анонсу</i></div></article>
+      <article class="card"><img src="img/g/atm-hall.webp" width="576" height="720" decoding="async" alt="Зал под круглыми лампами" loading="lazy"><div><h3>Турниры</h3><i>по анонсу</i></div></article>
+      <article class="card"><img src="img/lounge.webp" width="1280" height="720" decoding="async" alt="Уголок с диваном и столиком" loading="lazy"><div><h3>Дни рождения</h3><i>по брони</i></div></article>
+    </div>
+    <div class="actions rv" style="margin-top:40px"><a class="btn" href="https://t.me/duplet_nsk" rel="noopener">Наш Telegram-канал</a></div>
+  </div>
+</section>
+
+<!-- ============ отзывы ============ -->
+<section class="s dark" id="reviews">
+  <div class="wrap">
+    <div class="head rv">
+      <div>
+        <h2 class="h2"><em>Что пишут</em>в 2ГИС</h2>
+      </div>
+    </div>
+    <blockquote class="quote rv">«Если вы живёте рядом — завидую вам»</blockquote>
+    <p class="qsrc rv">Отзыв в 2ГИС, октябрь 2025</p>
+    <div class="revs">
+      <div class="rate rv"><b><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 15.2 8.6 23.4 9.3 17.2 14.7 19.1 22.7 12 18.4 4.9 22.7 6.8 14.7 .6 9.3 8.8 8.6Z"/></svg>5<span class="cm">,</span>0</b><span>рейтинг в 2ГИС: 168 оценок, 92 отзыва</span></div>
+      <div class="rev rv"><p>Шикарное место! Пришли сюда, потому что были хорошие отзывы, но до последнего думали, что накрутка или что-то в этом духе, но на деле — очень приятное место, прекрасные сотрудники, лояльное руководство, которому не всё равно, ну а цены просто подарок! Спасибо большое за такой вечер! Обязательно придём ещё!</p><cite>Екатерина К., 2ГИС</cite></div>
+      <div class="rev rv"><p>Ходим более пяти лет, много воспоминаний. Автомат с музыкой — отдельное спасибо.</p><cite>Иван Комаров, 2ГИС</cite></div>
+      <div class="rev rv"><p>Словно пришёл к близким друзьям. Вкусная еда, цена и качество оправданы.</p><cite>Юля Точилкина, 2ГИС</cite></div>
+    </div>
+    <div class="actions rv" style="margin-top:44px"><a class="btn ghost" href="https://2gis.ru/novosibirsk/firm/141265769932277/tab/reviews" rel="noopener">Все отзывы в 2ГИС</a></div>
+  </div>
+</section>
+
+<!-- ============ как найти ============ -->
+<section class="s light" id="find">
+  <div class="wrap">
+    <div class="head rv">
+      <div>
+        <h2 class="h2"><em>Как нас</em>найти</h2>
+      </div>
+    </div>
+    <div class="find">
+      <div class="rv">
+        <div class="addr">Улица Кропоткина<span class="cm">,</span> 118</div>
+        <p>Цокольный этаж, Заельцовский район. От метро «Гагаринская» около 15 минут пешком, рядом есть парковка. Вход отмечен в 2ГИС.</p>
+        <div class="status"><i id="status-dot"></i><span id="status-text">Сегодня до 01:00</span></div>
+        <div class="hours">
+          <div id="today-wd"><b>Пн–Пт</b><span>17:00–01:00</span></div>
+          <div id="today-we"><b>Сб–Вс</b><span>15:00–01:00</span></div>
+        </div>
+        <div class="actions">
+          <a class="btn" href="https://2gis.ru/novosibirsk/firm/141265769932277" rel="noopener">Открыть в 2ГИС</a>
+          <a class="btn ghost" href="https://yandex.ru/maps/?rtext=~55.055767,82.929673&rtt=auto" rel="noopener">Маршрут в Яндекс Картах</a>
+        </div>
+        <ul class="rules">
+          <li>Своё спиртное и еду не приносим</li>
+          <li>Алкоголь продаём только гостям старше 18 лет</li>
+          <li>Есть Wi‑Fi, можно прийти с ноутбуком</li>
+        </ul>
+      </div>
+      <div class="mapbox rv">
+        <div class="map mapcard" role="img" aria-label="Схема: Дуплет, улица Кропоткина, 118, цокольный этаж">
+          <svg viewBox="0 0 600 600" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+          <rect width="600" height="600" fill="#DDD3C5"/>
+          <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path stroke="#E9E2D5" stroke-width="2.6" d="M389 451L391 454L393 458L394 463L395 466L397 477M233 493L238 492L306 474L316 472L362 459L368 458L384 453L389 451L395 449L400 447L418 441L421 441L429 439L437 437L458 431L470 428L478 426L520 415L527 413L573 401L589 399L591 398L612 393M241 208L257 201L258 198L259 198L266 197L271 198L275 202L276 203L287 212L288 214L290 215L297 222L299 225L302 227L311 236L347 270L356 295L358 302L361 306M241 208L232 211L214 217L211 219L202 222L194 226L191 227L189 228L175 234L164 239L157 243L147 247L142 249L136 253L116 262L112 264L105 265L99 266L75 270L68 271L58 273M52 389L47 390L41 391M740 571L738 571L735 571L732 571L724 572L698 575L687 577L654 583L642 585L638 586L636 586L623 588L615 589L612 589L587 592L566 596M406 537L410 536L441 530L469 525M516 480L517 479L526 476L546 471L554 470L560 468L569 466M528 559L528 555L523 527L522 516L522 510L518 499L516 492L515 487L516 480M257 73L285 52L306 38L324 26L335 18L341 14L349 9L353 7M607 -141L601 -140L567 -132L561 -129L509 -78L488 -56L464 -30L456 -21L452 -16L368 71L362 77L362 79L364 83L367 88L379 109L380 111L384 114L390 112L424 105L436 98L445 96L454 94L473 89L475 89L477 89L486 87L493 85L516 83L528 81L547 77L570 72L573 71L575 69L578 67L581 63L592 53L604 40L611 32L612 32L615 29L619 26L627 17L633 9L638 6M612 393L621 387L629 385L635 383L660 377L680 372L684 371L694 367L695 366L697 364M557 512L566 511L626 502L646 498L669 494L670 494L688 491L691 490L699 489L720 486L730 484M469 525L482 523L500 520L502 519L514 517M638 6L645 5M306 162L314 163L332 173L337 176L345 187L350 195L355 201M389 195L403 192L414 189L432 185L439 183L441 183L442 183L445 184L448 184L449 184L450 185M355 201L358 202L362 203L367 202L389 195M281 328L281 331L285 347L290 368L291 373L293 378L294 383L296 391L296 393L299 402L299 404L301 411L304 420L306 429L307 436L308 438L310 447L312 458L316 470L316 472M626 502L629 522L630 526L630 529L631 535L632 539L632 543L632 545L634 560L636 574L638 582L638 586L639 593L644 618L645 626L646 629M399 493L401 506L402 514L402 514L406 535L406 537L409 555L409 556L412 574L413 577M353 7L359 2L406 -30M-23 107L-24 107L-24 107L-26 106L-72 91L-82 88L-105 81L-115 78L-131 72L-144 68L-169 60L-170 60L-175 58M41 391L30 393L13 397L-5 400L-15 402L-28 405M413 577L414 583L419 618L420 628L423 644L423 645L425 657L425 661L426 663L426 664L428 678L431 695L432 697L433 709L435 721L436 722M213 419L213 421L214 422L215 426L217 432L219 438L220 445L221 448L222 451L229 480L232 489L232 491L233 493M105 526L109 525L116 523L122 522L126 521L136 519L154 514L180 508L187 506L190 505L207 500L210 499L218 497L233 493M195 352L196 355L196 356L198 361L205 391L213 419M514 517L518 517L520 516L522 516L557 512M361 306L365 311L366 336M366 336L369 378L379 415L380 418L381 420L388 448L388 448L389 451M-55 333L-49 331L-39 329L-32 328L-25 327L-5 324L3 322L29 318"/>
+          <path stroke="#F6F2EA" stroke-width="6" d="M21 101L17 95L14 89L14 85L10 54L-1 -8L-3 -18L-7 -49L-7 -51L-11 -72L-12 -81L-25 -159L-30 -196L-32 -212L-34 -227L-37 -245L-42 -274M685 219L679 220L672 222L654 227L628 234L620 236L590 244L586 245L569 250L551 255L544 257L538 258L531 260L506 267L485 273L482 274L479 274L476 275L423 289L415 292L411 293L404 295L397 297L378 301L367 305L361 306L356 308L332 314L318 318L284 327L281 328L277 329L255 335L228 342L201 350L195 352L193 352L180 356L179 356L160 361L140 366L121 371L107 375L87 381L67 386M-53 -271L-50 -243L-48 -235L-45 -210L-38 -164L-37 -157L-35 -147L-33 -130L-28 -104L-24 -79L-20 -52L-19 -47L-12 -1L-2 56L2 84L2 87L2 93L1 99L-3 107M67 386L58 388M95 627L100 626L114 623L192 612L197 611L200 611L205 610L265 600L293 596L296 595L302 595L306 594L319 592L332 590L351 587L380 582L389 581L407 578L413 577L417 577L438 573L490 565L521 560L524 559L528 559L543 556L556 555L576 551L628 543L632 543L636 542L679 535L705 531L719 529L727 530L734 530"/>
+          <path stroke="#F6F2EA" stroke-width="9" d="M39 122L37 114L36 113L33 108L33 107L26 103M596 -172L605 -151L605 -148L607 -141L616 -94L626 -48L626 -46L628 -41L628 -38L629 -32L630 -29L635 -7L638 6M-10 125L-14 131L-18 139L-22 143L-25 146L-49 161M-22 150L-15 147L-7 144L0 144M95 627L94 619L87 578L86 572M645 5L643 -3L637 -31L637 -34L635 -42L634 -48L633 -51L624 -91L612 -146L611 -149L607 -174M638 6L640 16L646 41L652 67L663 115L664 119L677 184L678 189L683 209L685 219M4 146L9 151L13 157L16 162L17 166L18 170L22 194L32 254L34 265L40 308L42 324L45 339L46 350L51 381L52 389M58 388L57 380L52 349L50 337L47 316L45 302L42 281L40 269L33 225L27 189L24 169L24 165L23 161M78 75L46 97M21 101L15 100L8 100L2 103L-3 107M26 103L21 101M-3 107L-7 112L-9 118L-10 125M4 146L9 148L14 149L20 148L25 147M0 144L4 146M-10 125L-9 132L-5 139L0 144M-250 307L-241 300L-177 258L-172 254L-166 250L-148 238L-110 211L-90 198L-46 166L-27 153L-22 150M25 147L30 143L34 139L37 134L39 128L39 122M323 -93L317 -89L302 -78L297 -75L265 -54L201 -9L196 -5L175 10L153 25M86 572L85 564M85 564L59 394L58 388M79 574L80 579L86 620L87 628M78 566L79 574M105 57L78 75M153 25L115 50M115 50L105 57M52 389L53 394L78 566M55 100L119 56M119 56L157 30L199 1L205 -3M23 161L24 152L25 147"/>
+          <path stroke="#A9772A" stroke-width="3" stroke-dasharray="1 8" d="M83 510L56 388L98 378L139 369L181 356L222 346L264 332L305 323L347 307L388 299L430 290L471 275"/>
+          </g>
+          <g font-family="'Golos Text',system-ui,sans-serif" font-size="13" fill="#6B766F" letter-spacing=".04em">
+          <text transform="translate(264 332) rotate(-16.6)" y="21" text-anchor="middle">улица Кропоткина</text>
+          <text transform="translate(29 228) rotate(81.4)" y="-12" text-anchor="middle">Красный проспект</text>
+          <text transform="translate(373 582) rotate(-9.5)" y="-9" text-anchor="middle">улица Писарева</text>
+          <text transform="translate(264 332) rotate(-16.6)" y="-13" text-anchor="middle" fill="#A9772A" font-weight="600">15 минут пешком</text>
+          </g>
+          <g transform="translate(83 510)" font-family="'Golos Text',system-ui,sans-serif"><circle r="13" fill="#22302B"/><text y="5" text-anchor="middle" font-size="14" font-weight="700" fill="#F4F0E8">М</text><text x="21" y="5" font-size="15" font-weight="600" fill="#22302B">Гагаринская</text></g>
+          <g transform="translate(471 295)"><circle r="26" fill="#0E6E5E" opacity=".16"/><path d="M0 0c-17-22-25-35-25-47a25 25 0 0 1 50 0c0 12-8 25-25 47z" fill="#0E6E5E"/><circle cy="-47" r="9" fill="#F4F0E8"/></g>
+          </svg>
+          <span style="position:absolute;right:10px;bottom:8px;font-size:10px;line-height:1;color:#7C8279">© участники OpenStreetMap</span>
+          <div class="mapcap" style="top:18px;bottom:auto;right:auto"><b>Кропоткина<span class="cm">,</span> 118</b><span>Цокольный этаж · Заельцовский район</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="big">Дуплет<em>.</em> Больше<span class="cm">,</span> чем просто бильярд</div>
+    <nav aria-label="Контакты">
+      <a href="tel:+7913772">+7 913 772-XX-XX</a>
+      <a href="https://t.me/duplet_nsk" rel="noopener">Telegram</a>
+      <a href="https://2gis.ru/novosibirsk/firm/141265769932277" rel="noopener">2ГИС</a>
+    </nav>
+    <p>Новосибирск, Кропоткина, 118 · Пн–Пт 17:00–01:00, Сб–Вс 15:00–01:00</p>
+    <div class="legal">
+      <p class="todo">[Демо] Сведения о владельце: ООО «…» или ИП …, ОГРН …, ИНН …, юридический адрес … Заполнить до запуска.</p>
+      <nav aria-label="Документы">
+        <a href="policy.html">Политика обработки персональных данных</a>
+        <a href="consent.html">Согласие на обработку данных</a>
+        <button type="button" id="cookie-open">Настройки cookie</button>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+<div class="cookie" id="cookie" role="dialog" aria-labelledby="cookie-title" aria-describedby="cookie-text" hidden>
+  <div class="ck-main">
+    <h2 id="cookie-title">Мы используем файлы cookie</h2>
+    <p id="cookie-text">Они нужны, чтобы сайт работал, а с вашего согласия — ещё и для анализа посещаемости. Нажимая «Принять все», вы соглашаетесь на обработку cookie в соответствии с <a href="policy.html#cookie">Политикой обработки персональных данных</a>. Изменить выбор можно по ссылке «Настройки cookie» внизу страницы.</p>
+    <div class="ck-btns">
+      <button class="btn" type="button" data-cookie="all">Принять все</button>
+      <button class="btn ghost" type="button" data-cookie="necessary">Отклонить</button>
+    </div>
+  </div>
+</div>
+
+<div class="dock" id="dock">
+  <a class="btn ghost" href="tel:+7913772">Позвонить</a>
+  <button class="btn" type="button" data-book>Забронировать</button>
+</div>
+
+<dialog id="menu-dlg" aria-labelledby="menu-dlg-title">
+  <div class="dlg-head"><h2 id="menu-dlg-title">Меню клуба</h2><button class="x" type="button" id="close-menu" aria-label="Закрыть меню">×</button></div>
+  <div class="tabs" role="tablist" id="menu-tabs"></div>
+  <div class="dlg-body" id="menu-body"></div>
+</dialog>
+
+<script>
+/* ============ обычная часть сайта: работает и без 3D ============ */
+(() => {
+  const $ = id => document.getElementById(id);
+  /* часы работы: Новосибирск UTC+7, будни 17–01, выходные 15–01 */
+  const now = new Date(Date.now() + (7 * 60 + new Date().getTimezoneOffset()) * 60000);
+  const day = now.getDay(), h = now.getHours() + now.getMinutes() / 60;
+  const openHour = d => (d === 0 || d === 6) ? 15 : 17;
+  const isOpen = h < 1 || h >= openHour(day);
+  if (isOpen) { $('status-dot').classList.add('open'); $('status-text').textContent = 'Открыто до 01:00'; }
+  else $('status-text').textContent = 'Сегодня с ' + openHour(day) + ':00 до 01:00';
+  const schedDay = h < 1 ? (day + 6) % 7 : day;
+  $(schedDay === 0 || schedDay === 6 ? 'today-we' : 'today-wd').classList.add('on');
+
+  /* шапка и мобильная панель */
+  const nav = $('nav'), dock = $('dock');
+  const onScroll = () => { nav.classList.toggle('solid', scrollY > 8); dock.classList.toggle('show', scrollY > innerHeight * .8); };
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  /* появление блоков */
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .14, rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+
+  /* бронь */
+  const f = $('book-form'), date = f.date, time = f.time, err = $('form-error'), sum = $('sum'), done = $('form-done'), submit = $('book-submit');
+  const pad = n => String(n).padStart(2, '0');
+  const iso = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+  const CALL = 'Позвоните: +7 913 772-XX-XX.', HOLD_MINUTES = 15;
+  const maxDay = new Date(now); maxDay.setDate(maxDay.getDate() + 13);
+  date.min = iso(now); date.max = iso(maxDay); date.value = iso(now);
+  let timesSeq = 0;
+  const loadTimes = async () => {
+    const seq = ++timesSeq, prev = time.value;
+    time.disabled = true; time.innerHTML = '<option value="">Загружаем…</option>';
+    const q = new URLSearchParams({ table: f.table.value, date: date.value, hours: f.hours.value });
+    let times = null;
+    try { const r = await fetch('/api/availability?' + q); if (r.ok) times = (await r.json()).times; } catch (_) {}
+    if (seq !== timesSeq) return;
+    time.innerHTML = '';
+    if (times === null) {
+      time.add(new Option('Не удалось загрузить', ''));
+      err.textContent = !location.protocol.startsWith('http')
+        ? 'Сайт открыт как файл, поэтому бронь не работает. Запустите «Запустить Дуплет.bat» и откройте http://localhost:8080'
+        : 'Не получилось узнать свободное время. ' + CALL;
+      return;
+    }
+    if (!times.length) { time.add(new Option('Нет свободного времени', '')); return; }
+    times.forEach(t => time.add(new Option(t, t)));
+    time.value = times.includes(prev) ? prev : (times.includes('19:00') ? '19:00' : times[0]);
+    time.disabled = false;
+  };
+  const price = { russian: 600, pool: 500, vip: 800 };
+  const update = () => { sum.textContent = 'Игра: ' + (price[f.table.value] * Number(f.hours.value)).toLocaleString('ru-RU') + ' ₽ за ' + f.hours.value + ' ч'; };
+  f.addEventListener('change', e => { if (['date', 'table', 'hours'].includes(e.target.name)) { err.textContent = ''; loadTimes(); } update(); });
+  loadTimes(); update();
+  window.duplet = { setTable(code) { if (price[code]) { f.table.value = code; err.textContent = ''; loadTimes(); update(); } } };
+  f.addEventListener('submit', async e => {
+    e.preventDefault(); err.textContent = ''; done.hidden = true;
+    if (!date.value || date.value < date.min || date.value > date.max) { err.textContent = 'Выберите дату в ближайшие две недели.'; date.focus(); return; }
+    if (!time.value) { err.textContent = 'На этот день нет свободного времени: выберите другую дату, стол или длительность.'; return; }
+    if (!f.name.value.trim()) { err.textContent = 'Напишите, как к вам обращаться.'; f.name.focus(); return; }
+    if (f.phone.value.replace(/\D/g, '').length < 10) { err.textContent = 'Укажите телефон, чтобы администратор мог с вами связаться.'; f.phone.focus(); return; }
+    if (!f.consent.checked) { err.textContent = 'Без согласия на обработку персональных данных бронь не отправить. Поставьте галочку или позвоните нам.'; f.consent.focus(); return; }
+    submit.disabled = true; submit.textContent = 'Бронируем…';
+    try {
+      const r = await fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ table: f.table.value, date: date.value, time: time.value, hours: Number(f.hours.value),
+          guests: Number(f.guests.value || 2), name: f.name.value.trim(), phone: f.phone.value.trim(), consent: f.consent.checked, website: f.website.value }) });
+      const data = await r.json().catch(() => ({}));
+      if (r.status === 201) {
+        const start = new Date(data.start), end = new Date(data.end), hm = d => pad(d.getHours()) + ':' + pad(d.getMinutes());
+        const dayText = new Date(date.value + 'T12:00').toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', weekday: 'long' });
+        const hold = new Date(start.getTime() + HOLD_MINUTES * 60000);
+        done.textContent = 'Стол забронирован! Бронь №' + data.id + ': ' + data.table + ', ' + dayText + ', ' + hm(start) + '–' + hm(end) + '.\n\n' +
+          'Стол держим ' + HOLD_MINUTES + ' минут от начала брони — до ' + hm(hold) + '. Если не успеваете, позвоните: +7 913 772-XX-XX, иначе стол могут отдать другим гостям.';
+        done.hidden = false; f.name.value = ''; f.phone.value = ''; f.consent.checked = false; loadTimes();
+      } else { err.textContent = (data.error || 'Не получилось забронировать.') + (r.status >= 500 ? ' ' + CALL : ''); if (r.status === 409) loadTimes(); }
+    } catch (_) { err.textContent = 'Нет связи с сервером. ' + CALL; }
+    finally { submit.disabled = false; submit.textContent = 'Забронировать'; }
+  });
+
+  /* меню клуба */
+  const MENU = [
+    ['Кухня', [
+      ['Закуски', 'Соус входит в стоимость: кетчуп, сырный или горчичный.', [['Луковые кольца','150 г','200 ₽'],['Картофель фри','150 г','250 ₽'],['Сырные палочки','200 г','350 ₽'],['Наггетсы','200 г','350 ₽'],['Крылья фри','250 г','450 ₽'],['Гренки','150 г','200 ₽'],['Кольца кальмара','150 г','350 ₽']]],
+      ['Снеки', '', [['Чипсы в ассортименте','','250 ₽'],['Арахис','','200 ₽'],['Арахис в хрустящей корочке','','90 ₽'],['Кириешки','40 г / 80 г','50 / 100 ₽'],['Фисташки','','200 ₽'],['Сухарики «Хрусteam»','','200 ₽']]],
+      ['Шашлык', '', [['Из филе утки','','500 ₽'],['Из свинины','','500 ₽']]],
+      ['Горячее', '', [['Манты','5 шт','450 ₽']]],
+      ['Десерт', '', [['Штрудель с изюмом, яблоком и корицей','150 г','350 ₽'],['Сливочное мороженое','','350 ₽']]]]],
+    ['Напитки', [
+      ['Разливное', 'Алкоголь продаём гостям старше 18 лет.', [['Пиво в ассортименте','0,5 л','270 ₽']]],
+      ['Бутылочное', 'Ассортимент может меняться.', [['Бергаур Классик','4,8%','300 ₽'],['Бергаур Бланш','4%','300 ₽'],['Bud','4%','310 ₽'],['Карловсбад','5,2%','300 ₽'],['Левенбраун тёмное','4,7%','300 ₽'],['Хакан','4,8%','350 ₽'],['Бельгийское','4,5%','350 ₽'],['Пиво безалкогольное','','300 ₽'],['Сидр: яблоко, ежевика-мята, грейпфрут, кокос-малина','5%','350 ₽'],['Медовуха: классическая, клюква, ежевика-гранат','5%','340 ₽']]],
+      ['Без алкоголя', '', [['Dr Pepper','0,33 л','250 ₽'],['Кола','0,33 л','200 ₽'],['Сок','1 л','300 ₽'],['Вода с газом или без','0,5 л','90 ₽'],['Кофе заварной','0,2 л','150 ₽'],['Кофе растворимый','0,2 л','100 ₽'],['Молоко к кофе','25 мл','50 ₽']]]]],
+    ['Чай', [
+      ['Чай в чайнике, 0,8 л', '', [['Чёрный','','200 ₽'],['Зелёный','','200 ₽'],['Масала','индийский, с пряностями','300 ₽']]],
+      ['Ягодные', '', [['Облепиховый характер','','300 ₽'],['Смородиновый удар','','300 ₽']]],
+      ['Травяные', '', [['Таёжный','кедровый орех, бадан, иван-чай','250 ₽'],['Витаминный','черёмуха, шиповник, смородина','250 ₽'],['Иммунный','лимонник, облепиха, мята','250 ₽']]],
+      ['К чаю', 'К любому чаю — сушки в подарок. Травяные сборы содержат растительные компоненты: если есть аллергия, спросите состав у бармена.', [['Лимон','40 г','50 ₽'],['Мёд','50 г','100 ₽'],['Сливки','','30 ₽']]]]],
+    ['Игра', [
+      ['Час игры', '', [['Русский бильярд','','600 ₽'],['Американка','','500 ₽'],['Люкс','','800 ₽'],['Нарды или шахматы','','200 ₽']]],
+      ['Правила зала', 'Не курим в зале, не приносим свои напитки и еду, не садимся на стол и не ставим на него посторонние предметы. Едим и пьём у столов, в специально отведённых местах. Взаимоуважение — залог комфорта каждого гостя.', []]]]
+  ];
+  const dlg = $('menu-dlg'), tabsEl = $('menu-tabs'), body = $('menu-body');
+  const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const show = i => {
+    [...tabsEl.children].forEach((b, j) => { b.setAttribute('aria-selected', j === i); b.tabIndex = j === i ? 0 : -1; });
+    body.innerHTML = MENU[i][1].map(([t, note, rows]) => '<h3>' + esc(t) + '</h3>' +
+      rows.map(([n, d, p]) => '<div class="ln"><span>' + esc(n) + (d ? '<small>' + esc(d) + '</small>' : '') + '</span><b>' + esc(p) + '</b></div>').join('') +
+      (note ? '<p>' + esc(note) + '</p>' : '')).join('') + '<p>Цены из меню клуба, уточняйте у администратора.</p>';
+    body.scrollTop = 0;
+  };
+  MENU.forEach(([name], i) => { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = name;
+    b.addEventListener('click', () => show(i));
+    b.addEventListener('keydown', e => { const k = { ArrowRight: 1, ArrowLeft: -1 }[e.key]; if (!k) return; const n = (i + k + MENU.length) % MENU.length; show(n); tabsEl.children[n].focus(); });
+    tabsEl.append(b); });
+  show(0);
+  $('open-menu').addEventListener('click', () => dlg.showModal());
+  $('close-menu').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+
+  /* cookie: необходимые работают всегда, аналитика (Метрика) — только после согласия.
+     Выбор хранится в localStorage «duplet-cookie»: {"analytics":true|false,"at":"дата"} */
+  const KEY = 'duplet-cookie', box = $('cookie');
+  const read = () => { try { const v = localStorage.getItem(KEY); if (!v) return null;
+    if (v === 'all' || v === 'necessary') return { analytics: v === 'all' }; return JSON.parse(v); } catch (_) { return null; } };
+  let analyticsLoaded = false;
+  const loadAnalytics = () => { if (analyticsLoaded) return; analyticsLoaded = true;
+    /* сюда подключить Яндекс Метрику, когда она появится. До согласия её не грузить */ };
+  const save = analytics => { try { localStorage.setItem(KEY, JSON.stringify({ analytics, at: new Date().toISOString() })); } catch (_) {}
+    box.hidden = true; if (analytics) loadAnalytics(); else if (analyticsLoaded) location.reload(); };
+  box.querySelectorAll('[data-cookie]').forEach(b => b.addEventListener('click', () => save(b.dataset.cookie === 'all')));
+  $('cookie-open').addEventListener('click', () => { box.hidden = false; box.querySelector('button').focus(); });
+  const saved = read();
+  if (!saved) box.hidden = false; else if (saved.analytics) loadAnalytics();
+})();
+</script>
+
+<script type="importmap">
+{"imports":{
+  "three":"./vendor/three.module.min.js",
+  "three/addons/":"./vendor/addons/"
+}}
+</script>
+<script type="module">
+/* ============ 3D-стол: один скролл — удар — бронь ============ */
+const stage=document.getElementById('top'), canvas=document.getElementById('c');
+const title=document.getElementById('title'), hint=document.getElementById('hint'), book=document.getElementById('book');
+const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const lock=v=>{ document.documentElement.style.overflow=v?'hidden':''; };
+const goBook=code=>{ if(code) window.duplet?.setTable(code); };
+
+/* запасной вариант: нет WebGL или не загрузилась библиотека — фото и сразу форма */
+function fallback(){
+  stage.classList.add('nogl'); hint.hidden=true; lock(false);
+  title.style.opacity=matchMedia('(max-width:760px)').matches?0:1;
+  if(!matchMedia('(max-width:760px)').matches){ title.style.left='0'; title.style.right='42%'; }
+  book.inert=false; book.style.opacity=1; book.classList.add('on');
+  document.querySelectorAll('[data-book]').forEach(b=>b.addEventListener('click',()=>{
+    goBook(b.dataset.book); scrollTo({top:0,behavior:'smooth'}); setTimeout(()=>document.getElementById('f-name').focus({preventScroll:true}),500); }));
+}
+let THREE, RoomEnvironment, giveUp;
+/* библиотека грузится долго или не грузится: через 4 с, а также по клику на «Забронировать» или «листай», включаем запасной вариант */
+const abort=new Promise((_,rej)=>{ giveUp=rej; }); abort.catch(()=>{});
+const loadTimer=setTimeout(()=>giveUp(new Error('three.js: таймаут загрузки')),4000);
+const earlyClick=e=>{ goBook(e.currentTarget.dataset?.book); giveUp(new Error('клик до загрузки сцены')); };
+const earlyEls=[hint,...document.querySelectorAll('[data-book]')];
+earlyEls.forEach(b=>b.addEventListener('click',earlyClick));
+try{
+  if(matchMedia('(max-width:760px)').matches) throw new Error('телефон: показываем запасной экран без 3D');
+  const probe=document.createElement('canvas'); if(!(probe.getContext('webgl2')||probe.getContext('webgl'))) throw new Error('no webgl');
+  const [t,re]=await Promise.race([Promise.all([import('three'),import('three/addons/environments/RoomEnvironment.js')]),abort]);
+  THREE=t; RoomEnvironment=re.RoomEnvironment;
+  clearTimeout(loadTimer); earlyEls.forEach(b=>b.removeEventListener('click',earlyClick));
+}catch(e){ clearTimeout(loadTimer); earlyEls.forEach(b=>b.removeEventListener('click',earlyClick)); fallback(); throw e; }
+
+/* ---------- размеры стола (метры) ---------- */
+const L=1.775, W=0.8875, R=0.04, STRIKE=0.35, RACK_X=0.72;
+const HOLES=[[-L-.056,-W-.056],[-L-.056,W+.056],[L+.056,-W-.056],[L+.056,W+.056],[0,-W-.072],[0,W+.072]];
+const POCKETS=[[-L,-W,.078],[-L,W,.078],[L,-W,.078],[L,W,.078],[0,-W-.01,.068],[0,W+.01,.068]];
+/* физика без Math.hypot: только + - * / sqrt, чтобы удар был одинаковым во всех браузерах */
+function physics(o,onStep){
+  const balls=[{x:o.x0,z:o.z0,vx:0,vz:0,in:-1,pk:-1,cx:0,cz:0}];
+  const d=2*R+0.0006;
+  for(let i=0;i<5;i++) for(let j=0;j<=i;j++)
+    balls.push({x:RACK_X+i*d*Math.sqrt(3)/2, z:(j-i/2)*d, vx:0, vz:0, in:-1, pk:-1, cx:0, cz:0});
+  const N=balls.length, DT=1/720;
+  const ax=RACK_X-o.x0, az=o.aim-o.z0, al=Math.sqrt(ax*ax+az*az);
+  let t=0, step=0, struck=false, tHit=-1;
+  const sink=(b,pk)=>{ b.in=t; b.pk=pk; b.cx=b.x; b.cz=b.z; };
+  while(t<9){
+    if(!struck && t>=STRIKE){ balls[0].vx=o.v*ax/al; balls[0].vz=o.v*az/al; struck=true; }
+    for(const b of balls){ if(b.in>=0) continue;
+      const v=Math.sqrt(b.vx*b.vx+b.vz*b.vz);
+      if(v>0){ const nv=Math.max(0,v-(0.35+1.0*v)*DT); b.vx*=nv/v; b.vz*=nv/v; }
+      b.x+=b.vx*DT; b.z+=b.vz*DT;
+    }
+    for(let i=0;i<N;i++){ const a=balls[i]; if(a.in>=0) continue;
+      for(let j=i+1;j<N;j++){ const b=balls[j]; if(b.in>=0) continue;
+        const dx=b.x-a.x, dz=b.z-a.z, dist=Math.sqrt(dx*dx+dz*dz);
+        if(dist<2*R && dist>0){
+          const nx=dx/dist, nz=dz/dist, ov=(2*R-dist)/2;
+          a.x-=nx*ov; a.z-=nz*ov; b.x+=nx*ov; b.z+=nz*ov;
+          const rel=(b.vx-a.vx)*nx+(b.vz-a.vz)*nz;
+          if(rel<0){ const k=-(1+0.96)*rel/2; a.vx-=k*nx; a.vz-=k*nz; b.vx+=k*nx; b.vz+=k*nz; if(tHit<0 && i===0) tHit=t; }
+        }
+      }
+    }
+    for(const b of balls){ if(b.in>=0) continue;
+      let near=false, best=0, bd=1e9;
+      for(let pi=0;pi<6;pi++){ const p=POCKETS[pi], ex=b.x-p[0], ez=b.z-p[1], dd=Math.sqrt(ex*ex+ez*ez);
+        if(dd<bd){ bd=dd; best=pi; }
+        if(dd<p[2]){ sink(b,pi); break; } if(dd<0.115) near=true; }
+      if(b.in>=0) continue;
+      if(Math.abs(b.x)>L+R*0.5 || Math.abs(b.z)>W+R*0.5){ sink(b,best); continue; }
+      if(!near){
+        if(b.x> L-R){ b.x= L-R; b.vx=-Math.abs(b.vx)*0.78; }
+        if(b.x<-L+R){ b.x=-L+R; b.vx= Math.abs(b.vx)*0.78; }
+        if(b.z> W-R){ b.z= W-R; b.vz=-Math.abs(b.vz)*0.78; }
+        if(b.z<-W+R){ b.z=-W+R; b.vz= Math.abs(b.vz)*0.78; }
+      }
+    }
+    if(onStep) onStep(balls,t,step);
+    t+=DT; step++;
+    if(struck && t>STRIKE+1 && balls.every(b=>b.in>=0 ? t-b.in>0.45 : b.vx*b.vx+b.vz*b.vz<0.000016)) break;
+  }
+  return {balls, N, T:t, tHit};
+}
+
+/* три разбития, каждое просчитано заранее. Во втором шар №11 закатывается в дальнюю среднюю лузу */
+const SHOTS=[{x0:-.95,z0:0,aim:0,v:12.5},{x0:-.95,z0:-.3,aim:-.005,v:12},{x0:-.95,z0:.35,aim:-.015,v:11.5}];
+function simulate(o){
+  const frames=[], REC=6, DROP=0.34;
+  let quats=null, prev=null;
+  const tmpQ=new THREE.Quaternion(), axis=new THREE.Vector3();
+  const res=physics(o,(balls,t,step)=>{
+    if(step%REC) return;
+    if(!quats){
+      quats=balls.map((_,i)=>new THREE.Quaternion().setFromEuler(new THREE.Euler(i*1.7,i*2.3,i*0.9)));
+      prev=balls.map(b=>[b.x,b.z]);
+    }
+    const f=new Float32Array(balls.length*7);
+    balls.forEach((b,i)=>{
+      let x=b.x, z=b.z, drop=0;
+      if(b.in>=0){ drop=Math.min(1,(t-b.in)/DROP); const e=1-(1-drop)*(1-drop), h=HOLES[b.pk];
+        x=b.cx+(h[0]-b.cx)*e; z=b.cz+(h[1]-b.cz)*e; }
+      const dx=x-prev[i][0], dz=z-prev[i][1], len=Math.sqrt(dx*dx+dz*dz);
+      if(len>1e-7){ axis.set(dz/len,0,-dx/len); tmpQ.setFromAxisAngle(axis,len/R); quats[i].premultiply(tmpQ); }
+      prev[i][0]=x; prev[i][1]=z;
+      const q=quats[i];
+      f.set([x,z,q.x,q.y,q.z,q.w,drop], i*7);
+    });
+    frames.push(f);
+  });
+  const ax=RACK_X-o.x0, az=o.aim-o.z0, al=Math.sqrt(ax*ax+az*az);
+  return {frames, N:res.N, T:res.T, fps:120, tHit:res.tHit, o, dir:[ax/al,az/al]};
+}
+const SIMS=[], getSim=i=>SIMS[i]||(SIMS[i]=simulate(SHOTS[i]));   // считаем только нужное разбитие, остальные лениво
+/* какое разбитие показать: ?shot=1..3 для проверки, иначе следующее после прошлого визита */
+let vi=Math.floor(Math.random()*SHOTS.length);
+try{ const last=parseInt(localStorage.getItem('duplet-shot'),10); if(last>=0 && last<SHOTS.length) vi=(last+1)%SHOTS.length; }catch(e){}
+{ const q=parseInt(new URLSearchParams(location.search).get('shot'),10); if(q>=1 && q<=SHOTS.length) vi=q-1; }
+let SIM=getSim(vi);
+
+/* ---------- сцена ---------- */
+let renderer;
+try{ renderer=new THREE.WebGLRenderer({canvas,antialias:true,powerPreference:'high-performance'}); }
+catch(e){ fallback(); throw e; }
+const small=matchMedia('(max-width:760px)').matches;
+renderer.setPixelRatio(Math.min(devicePixelRatio, small?1.5:2));
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.1;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x050B0A);
+const pmrem=new THREE.PMREMGenerator(renderer);
+scene.environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture;
+const camera=new THREE.PerspectiveCamera(32,1,0.05,80);
+
+/* основной свет: три тёплые лампы над столом, у каждой своё пятно и своя тень */
+scene.add(new THREE.HemisphereLight(0xFFE2B8,0x0D4638,0.15));   // снизу — зелёный отсвет сукна на шарах
+for(const x of [-1.15,0,1.15]){
+  const s=new THREE.SpotLight(0xFFD39A,21,7,0.6,1,1.6);
+  s.position.set(x,2.15,0); s.target.position.set(x,0,0);
+  s.castShadow=true; s.shadow.mapSize.set(small?1024:2048,small?1024:2048);
+  s.shadow.bias=-0.0004; s.shadow.normalBias=0.004; s.shadow.radius=small?4:7; s.shadow.camera.near=0.5; s.shadow.camera.far=4.5;
+  scene.add(s,s.target);
+}
+/* контурный свет: низкий, навстречу камере — обводит шары, почти не трогает сукно */
+const rim=new THREE.DirectionalLight(0xBFE4FF,2.4); scene.add(rim,rim.target);
+const rimSide=new THREE.DirectionalLight(0xFFC98A,0.7); rimSide.position.set(.5,.3,-3); scene.add(rimSide);
+const rimSide2=new THREE.DirectionalLight(0x9FD8FF,0.55); rimSide2.position.set(-.5,.3,3); scene.add(rimSide2);
+
+function canvasTex(w,h,draw,rx=1,ry=1){
+  const c=document.createElement('canvas'); c.width=w; c.height=h; draw(c.getContext('2d'),w,h);
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(rx,ry);
+  t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=8; return t;
+}
+const feltTex=canvasTex(256,256,(g,w,h)=>{
+  g.fillStyle='#096352'; g.fillRect(0,0,w,h);
+  const img=g.getImageData(0,0,w,h), d=img.data;
+  for(let i=0;i<d.length;i+=4){ const n=(Math.random()-.5)*16; d[i]+=n*.6; d[i+1]+=n; d[i+2]+=n*.9; }
+  g.putImageData(img,0,0);
+},14,7);
+const woodTex=canvasTex(1024,256,(g,w,h)=>{
+  const base=g.createLinearGradient(0,0,0,h); base.addColorStop(0,'#55301C'); base.addColorStop(.5,'#4A2816'); base.addColorStop(1,'#5A3420');
+  g.fillStyle=base; g.fillRect(0,0,w,h);
+  for(let i=0;i<260;i++){ const y=Math.random()*h, dark=Math.random()<.55;
+    g.strokeStyle=`rgba(${dark?'22,9,4':'142,88,52'},${.05+Math.random()*.16})`;
+    g.lineWidth=.4+Math.random()*(dark?2.2:1.2); g.beginPath(); g.moveTo(0,y);
+    g.bezierCurveTo(w*.3,y+Math.random()*10-5,w*.6,y+Math.random()*10-5,w,y+Math.random()*8-4); g.stroke(); }
+  for(let i=0;i<5;i++){ const x=Math.random()*w, y=Math.random()*h, r=g.createRadialGradient(x,y,0,x,y,60+Math.random()*80);
+    r.addColorStop(0,'rgba(20,8,3,.22)'); r.addColorStop(1,'rgba(20,8,3,0)'); g.fillStyle=r; g.fillRect(0,0,w,h); }
+},.8,4);
+const slatTex=canvasTex(256,64,(g,w,h)=>{
+  g.fillStyle='#061210'; g.fillRect(0,0,w,h);
+  for(let i=0;i<8;i++){ const x=i*32, gr=g.createLinearGradient(x,0,x+24,0);
+    gr.addColorStop(0,'#16332D'); gr.addColorStop(.5,'#0F2622'); gr.addColorStop(1,'#0A1B18');
+    g.fillStyle=gr; g.fillRect(x,0,24,h); }
+},14,1);
+
+const feltMat=new THREE.MeshPhysicalMaterial({map:feltTex,roughness:.97,envMapIntensity:.06,sheen:.3,sheenRoughness:.85,sheenColor:new THREE.Color(0x1C7A64)});
+const felt=new THREE.Mesh(new THREE.PlaneGeometry(2*L+.1,2*W+.1),feltMat);
+felt.rotation.x=-Math.PI/2; felt.receiveShadow=true; scene.add(felt);
+const markMat=new THREE.MeshBasicMaterial({color:0xE9E2CF,transparent:true,opacity:.2});
+const spot=new THREE.Mesh(new THREE.CircleGeometry(.008,16),markMat); spot.rotation.x=-Math.PI/2; spot.position.set(.72,.0006,0); scene.add(spot);
+const line=new THREE.Mesh(new THREE.PlaneGeometry(.003,2*W),markMat); line.rotation.x=-Math.PI/2; line.position.set(-.89,.0006,0); scene.add(line);
+
+const feltTex2=feltTex.clone(); feltTex2.repeat.set(3.7,3.7); feltTex2.needsUpdate=true;
+const cushMat=new THREE.MeshPhysicalMaterial({map:feltTex2,color:0xD8F0E6,roughness:.93,envMapIntensity:.06,sheen:.3,sheenRoughness:.85,sheenColor:new THREE.Color(0x1C7A64)});
+/* дерево под матовым лаком: мягкий блик по фаске, без белёсых пятен от контурного света */
+const woodMat=new THREE.MeshPhysicalMaterial({map:woodTex,roughness:.58,metalness:0,envMapIntensity:.3,clearcoat:.35,clearcoatRoughness:.4});
+const darkWood=new THREE.MeshStandardMaterial({color:0x24130B,roughness:.7,envMapIntensity:.15});
+function add(geo,mat,cast=true){ const m=new THREE.Mesh(geo,mat); m.castShadow=cast; m.receiveShadow=true; scene.add(m); return m; }
+function box(w,h,d,x,y,z,mat){ const m=add(new THREE.BoxGeometry(w,h,d),mat); m.position.set(x,y,z); return m; }
+const CW=.05, CH=.052, RW=.15, RH=.066, OX=L+CW+RW, OZ=W+CW+RW, HR=.08;
+const arc=(cx,cz,r,a0,a1,n=18)=>Array.from({length:n+1},(_,i)=>{ const a=a0+(a1-a0)*i/n; return [cx+r*Math.cos(a),cz+r*Math.sin(a)]; });
+
+/* борта: резина с носиком на высоте центра шара, у луз срезана под углом */
+const cushProf=new THREE.Shape([[CW,0],[CW,CH],[.008,.047],[0,.041],[0,.031],[.014,0]].map(p=>new THREE.Vector2(p[0],p[1])));
+function cushion(loN,hiN,loR,hiR){            // края вдоль борта: у носика и у дерева
+  const g=new THREE.ExtrudeGeometry(cushProf,{depth:1,steps:1,bevelEnabled:false});
+  const pos=g.attributes.position;
+  for(let i=0;i<pos.count;i++){ const t=pos.getX(i)/CW;
+    pos.setZ(i, pos.getZ(i)<.5 ? loN+(loR-loN)*t : hiN+(hiR-hiN)*t); }
+  return g;
+}
+const cN=.10, cR=.024, mN=.10, mR=.077;       // отступы от угловой и средней лузы
+for(const s of [-1,1]){
+  for(const side of [-1,1]){                   // длинные борта: по два куска на сторону
+    const span=side>0 ? [mN,L-cN,mR,L-cR] : [-(L-cN),-mN,-(L-cR),-mR];
+    const g = s>0 ? cushion(-span[1],-span[0],-span[3],-span[2]) : cushion(span[0],span[1],span[2],span[3]);
+    g.translate(W,0,0); g.rotateY(s>0?-Math.PI/2:Math.PI/2); g.computeVertexNormals(); add(g,cushMat);
+  }
+  const e=cushion(-(W-cN),W-cN,-(W-cR),W-cR);  // короткие борта
+  e.translate(L,0,0); if(s<0) e.rotateY(Math.PI); e.computeVertexNormals(); add(e,cushMat);
+}
+
+/* рама: четыре доски со скосом в углах, вырезы под лузы, фаска по краю */
+function railGeo(hx,w0,mid){
+  const B=w0, cx=hx+.006, cz=w0+.006, q=Math.sqrt(HR*HR-.006*.006), d=Math.asin(.006/HR), rc=.06;
+  const ox=hx+RW, oz=w0+RW, H=[];
+  if(mid){ const dm=Math.asin(.022/HR); H.push(...arc(0,w0+.022,HR,Math.PI/2,-dm,14)); } else H.push([0,B]);
+  H.push([cx-q,B], ...arc(cx,cz,HR,Math.PI+d,Math.PI/4,20).slice(1), ...arc(ox-rc,oz-rc,rc,Math.PI/4,Math.PI/2,6), [0,oz]);
+  const pts=H.concat(H.slice(1,-1).reverse().map(p=>[-p[0],p[1]]));
+  const bt=.004, g=new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(p=>new THREE.Vector2(p[0],p[1]))),
+    {depth:RH-2*bt,bevelEnabled:true,bevelThickness:bt,bevelSize:.004,bevelOffset:-.004,bevelSegments:2});
+  g.rotateX(Math.PI/2); g.translate(0,RH-bt,0); return g;
+}
+for(const s of [-1,1]){
+  const a=railGeo(L+CW,W+CW,true); if(s<0) a.rotateY(Math.PI); add(a,woodMat);
+  const b=railGeo(W+CW,L+CW,false); b.rotateY(s*Math.PI/2); add(b,woodMat);
+}
+box(2*OX-.07,.2,2*OZ-.07, 0,-.102,0,darkWood);
+for(const sx of [-1,0,1]) for(const sz of [-1,1]) box(.17,.62,.17, sx*(L-.25),-.51,sz*(W-.2),darkWood);
+
+/* лузы: настоящий вырез в раме, кожаный стакан и воротник только со стороны дерева */
+const holeMat=new THREE.MeshBasicMaterial({color:0x020403});
+const brass=new THREE.MeshStandardMaterial({color:0xB98A3A,metalness:.9,roughness:.36,envMapIntensity:.8});
+const leather=new THREE.MeshStandardMaterial({color:0x1E100A,roughness:.75,envMapIntensity:.2});
+const cupMat=new THREE.MeshStandardMaterial({color:0x120906,roughness:.85,envMapIntensity:.1,side:THREE.BackSide});
+function torusArc(r,tube,a0,w,seg){ const g=new THREE.TorusGeometry(r,tube,12,seg,w); g.rotateX(Math.PI/2); g.rotateY(w/2-a0); return g; }
+HOLES.forEach(([px,pz],i)=>{
+  const corner=i<4, a0=Math.atan2(pz,corner?px:0), w=THREE.MathUtils.degToRad(corner?279:212);
+  const floor=new THREE.Mesh(new THREE.CircleGeometry(HR,40),holeMat); floor.rotation.x=-Math.PI/2; floor.position.set(px,.0009,pz); scene.add(floor);
+  const cup=new THREE.Mesh(new THREE.CylinderGeometry(HR+.001,HR-.006,RH,40,1,true,Math.PI/2-a0-w/2,w),cupMat); cup.position.set(px,RH/2,pz); scene.add(cup);
+  const c=add(torusArc(HR+.007,.011,a0,w-.12,48),leather); c.position.set(px,RH-.004,pz);
+  const r=add(torusArc(HR-.002,.0032,a0,w-.12,48),brass,false); r.position.set(px,RH+.0035,pz);
+});
+/* прицельные метки: перламутровые ромбы */
+const pearl=new THREE.MeshStandardMaterial({color:0xEFE9DA,roughness:.28,metalness:.1,envMapIntensity:.9});
+const dotGeo=new THREE.CircleGeometry(.012,4);
+function sight(x,z,alongX){ const m=new THREE.Mesh(dotGeo,pearl); m.rotation.x=-Math.PI/2; m.position.set(x,RH+.0007,z);
+  alongX ? m.scale.set(1.5,.8,1) : m.scale.set(.8,1.5,1); scene.add(m); }
+for(const s of [-1,1]){
+  for(let i=1;i<8;i++){ if(i===4) continue; sight(-L+i*(2*L/8), s*(W+CW+RW/2), true); }
+  for(let i=1;i<4;i++) sight(s*(L+CW+RW/2), -W+i*(2*W/4), false);
+}
+const chalkMat=new THREE.MeshStandardMaterial({color:0x2F6FA0,roughness:1,envMapIntensity:.1});
+box(.026,.026,.026, -.62,RH+.013,W+CW+.1,chalkMat).rotation.y=.5;
+box(.026,.026,.026, 1.05,RH+.013,-(W+CW+.09),chalkMat).rotation.y=-.3;
+
+/* зал: пол, стены в рейках, бра со светом вверх и вниз — как в клубе */
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(30,30),new THREE.MeshStandardMaterial({color:0x0A0F0D,roughness:.42,envMapIntensity:.25}));
+floor.rotation.x=-Math.PI/2; floor.position.y=-.82; floor.receiveShadow=true; scene.add(floor);
+const wallMat=new THREE.MeshStandardMaterial({map:slatTex,roughness:.75,envMapIntensity:.08});
+function wall(w,x,z,ry){ const m=new THREE.Mesh(new THREE.PlaneGeometry(w,3.4),wallMat); m.position.set(x,.88,z); m.rotation.y=ry; scene.add(m); }
+wall(10,5.4,0,-Math.PI/2); wall(11,0,-4.6,0); wall(11,0,4.6,Math.PI);
+const glowTex=canvasTex(128,128,(g,w,h)=>{ const r=g.createRadialGradient(64,64,0,64,64,64);
+  r.addColorStop(0,'rgba(255,214,150,1)'); r.addColorStop(.25,'rgba(255,190,110,.45)'); r.addColorStop(1,'rgba(255,170,80,0)');
+  g.fillStyle=r; g.fillRect(0,0,w,h); });
+const beamTex=canvasTex(64,256,(g,w,h)=>{
+  const img=g.createImageData(w,h), d=img.data;
+  for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+    const v=Math.abs(y-h/2)/(h/2), half=.06+v*.44, u=Math.abs(x-w/2)/(w/2);
+    const a=Math.max(0,1-u/half)*Math.pow(1-v,1.6)*(v>.02?1:0);
+    const i=(y*w+x)*4; d[i]=255; d[i+1]=205; d[i+2]=140; d[i+3]=a*150; }
+  g.putImageData(img,0,0); });
+const bulbMat=new THREE.MeshBasicMaterial({color:0xFFE3B5});
+const beamMat=new THREE.MeshBasicMaterial({map:beamTex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false});
+function sconce(x,y,z,ry,light){
+  const b=new THREE.Mesh(new THREE.BoxGeometry(.07,.1,.05),new THREE.MeshStandardMaterial({color:0x101615,roughness:.6})); b.position.set(x,y,z); b.rotation.y=ry; scene.add(b);
+  const beam=new THREE.Mesh(new THREE.PlaneGeometry(.9,2.3),beamMat); beam.rotation.y=ry;
+  beam.position.set(x+Math.sin(ry)*.012,y,z+Math.cos(ry)*.012); scene.add(beam);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:.8}));
+  s.scale.set(.55,.55,1); s.position.set(x+Math.sin(ry)*.05,y,z+Math.cos(ry)*.05); scene.add(s);
+  if(light){ const p=new THREE.PointLight(0xFFC27A,3,4.5,1.8); p.position.set(x+Math.sin(ry)*.25,y,z+Math.cos(ry)*.25); scene.add(p); }
+}
+for(const z of [-3,-1,1,3]) sconce(5.38,1.05,z,-Math.PI/2, z===-1||z===1);
+for(const x of [-3.2,-.8,1.6,3.8]){ sconce(x,1.05,-4.58,0, x===1.6); sconce(x,1.05,4.58,Math.PI, x===-.8); }
+
+/* шары */
+function ballTexture(n){
+  return canvasTex(512,256,(g)=>{
+    g.fillStyle='#F2ECDD'; g.fillRect(0,0,512,256);
+    g.fillStyle='#2A2622'; g.font='500 46px Georgia,serif'; g.textAlign='center'; g.textBaseline='middle';
+    for(const u of [128,384]){ g.save(); g.translate(u,128); g.scale(.6,1); g.fillText(String(n),0,0); g.restore(); }
+  });
+}
+const ballGeo=new THREE.SphereGeometry(R,small?32:56,small?20:36);
+const balls=[];
+for(let i=0;i<SIM.N;i++){
+  const mat=new THREE.MeshPhysicalMaterial(i===0
+    ? {color:0x4A0A17,roughness:.12,clearcoat:1,clearcoatRoughness:.03,envMapIntensity:.7}
+    : {map:ballTexture(i),roughness:.15,clearcoat:1,clearcoatRoughness:.04,envMapIntensity:.65});
+  const m=new THREE.Mesh(ballGeo,mat); m.castShadow=true; scene.add(m); balls.push(m);
+}
+/* пятно контактной тени под шаром: без него шары будто висят над сукном */
+const blobTex=canvasTex(64,64,(g)=>{ const r=g.createRadialGradient(32,32,2,32,32,32);
+  r.addColorStop(0,'rgba(0,0,0,.9)'); r.addColorStop(.35,'rgba(0,0,0,.5)'); r.addColorStop(.7,'rgba(0,0,0,.12)'); r.addColorStop(1,'rgba(0,0,0,0)'); g.fillStyle=r; g.fillRect(0,0,64,64); });
+const blobMat=new THREE.MeshBasicMaterial({map:blobTex,transparent:true,depthWrite:false,opacity:.5});
+const blobGeo=new THREE.PlaneGeometry(R*2.3,R*2.3); blobGeo.rotateX(-Math.PI/2);
+const blobs=balls.map(()=>{ const b=new THREE.Mesh(blobGeo,blobMat); b.position.y=.0016; b.renderOrder=1; scene.add(b); return b; });
+/* кий */
+const cue=new THREE.Group();
+const stickMat=new THREE.MeshStandardMaterial({color:0xC89B5E,roughness:.5,transparent:true,envMapIntensity:.3});
+const buttMat=new THREE.MeshStandardMaterial({color:0x2A1710,roughness:.45,transparent:true,envMapIntensity:.3});
+const tipMat=new THREE.MeshStandardMaterial({color:0x3C6E8C,roughness:.9,transparent:true});
+const ferMat=new THREE.MeshStandardMaterial({color:0xEFE8D8,roughness:.4,transparent:true});
+const shaft=new THREE.Mesh(new THREE.CylinderGeometry(.0062,.0105,.95,20),stickMat); shaft.rotation.z=-Math.PI/2; shaft.position.x=-.5;
+const butt=new THREE.Mesh(new THREE.CylinderGeometry(.0105,.0145,.55,20),buttMat); butt.rotation.z=-Math.PI/2; butt.position.x=-.975-.275;
+const ferrule=new THREE.Mesh(new THREE.CylinderGeometry(.0062,.0062,.025,16),ferMat); ferrule.rotation.z=-Math.PI/2; ferrule.position.x=-.0125;
+const tip=new THREE.Mesh(new THREE.CylinderGeometry(.0058,.0062,.012,16),tipMat); tip.rotation.z=-Math.PI/2; tip.position.x=.006;
+[shaft,butt,ferrule,tip].forEach(m=>{m.castShadow=true; cue.add(m);});
+cue.rotation.order='YXZ'; cue.rotation.z=-0.07; scene.add(cue);
+
+/* ---------- камера ---------- */
+const lookA=new THREE.Vector3(), posA=new THREE.Vector3(), dirV=new THREE.Vector3();
+let posCurve, tgtCurve, portrait=false, VW=1, VH=1;
+const KEY=[0,.2,.48,.8];
+const clamp01=v=>Math.min(1,Math.max(0,v)), smooth=v=>v*v*(3-2*v);
+function buildCamera(){
+  VW=canvas.clientWidth||innerWidth; VH=canvas.clientHeight||innerHeight; const a=VW/VH, k=2*Math.tan(THREE.MathUtils.degToRad(16));
+  camera.aspect=a; camera.clearViewOffset(); camera.updateProjectionMatrix(); renderer.setSize(VW,VH,false);
+  portrait=VW<=760;
+  const needW=2*L+.8, needH=2*W+.8;
+  const H=portrait ? needW/(k*a)*1.03 : Math.max(needW/(k*a*.6),needH/k)*1.03;
+  const side=a<1?.55:1;
+  posCurve=new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-1.72,.2,.34*side+SIM.o.z0*.55), new THREE.Vector3(.02,.34,.86*side),
+    new THREE.Vector3(1.25,1.5,1.55*side), new THREE.Vector3(0,H,H*.2)],false,'centripetal');
+  tgtCurve=new THREE.CatmullRomCurve3([
+    new THREE.Vector3(.7,.2,SIM.o.z0*.12), new THREE.Vector3(.86,.04,0),
+    new THREE.Vector3(.35,0,0), new THREE.Vector3(0,0,0)],false,'centripetal');
+}
+function curveParam(p){
+  p=clamp01(p);
+  for(let i=0;i<KEY.length-1;i++) if(p<=KEY[i+1]){ const u=(p-KEY[i])/(KEY[i+1]-KEY[i]); return (i+u)/(KEY.length-1); }
+  return 1;
+}
+
+/* ---------- кадр по прогрессу p: 0 — пирамида, 1 — экран брони ---------- */
+const qa=new THREE.Quaternion(), qb=new THREE.Quaternion();
+function apply(p,now){
+  const u=clamp01(p/.9), t=SIM.T*Math.pow(u,1.15);
+  const ff=Math.min(SIM.frames.length-1.001,t*SIM.fps), i0=Math.floor(ff), k=ff-i0;
+  const A=SIM.frames[i0], B=SIM.frames[i0+1];
+  for(let i=0;i<SIM.N;i++){
+    const o=i*7, x=A[o]+(B[o]-A[o])*k, z=A[o+1]+(B[o+1]-A[o+1])*k, drop=A[o+6]+(B[o+6]-A[o+6])*k;
+    const m=balls[i]; m.visible=drop<1;
+    m.position.set(x,R-drop*drop*.11,z);
+    const sh=blobs[i]; sh.visible=drop<.02; sh.position.x=x; sh.position.z=z;
+    qa.set(A[o+2],A[o+3],A[o+4],A[o+5]); qb.set(B[o+2],B[o+3],B[o+4],B[o+5]);
+    m.quaternion.copy(qa).slerp(qb,k);
+  }
+  let gap;
+  if(t<.2) gap=.03+.15*smooth(t/.2);
+  else if(t<STRIKE) gap=.18*(1-Math.pow((t-.2)/(STRIKE-.2),2.2));
+  else gap=-.06*Math.min(1,(t-STRIKE)/.12);
+  const fade=1-clamp01((t-STRIKE-.1)/.45);
+  const o0=SIM.o, dr=SIM.dir;
+  cue.visible=fade>0; cue.position.set(o0.x0-dr[0]*(R+gap),R+.004+(1-fade)*.12,o0.z0-dr[1]*(R+gap));
+  cue.rotation.y=-Math.atan2(dr[1],dr[0]);
+  stickMat.opacity=buttMat.opacity=tipMat.opacity=ferMat.opacity=fade;
+  const cp=curveParam(p);
+  posCurve.getPoint(cp,posA); tgtCurve.getPoint(cp,lookA);
+  const idle=1-clamp01(p/.05), s=now/1000;
+  posA.z+=Math.sin(s*.45)*.018*idle; posA.y+=Math.sin(s*.31)*.006*idle;
+  const dtHit=t-SIM.tHit;
+  if(dtHit>0 && dtHit<.9){ const amp=.014*Math.exp(-dtHit*7); posA.y+=Math.sin(dtHit*85)*amp; posA.z+=Math.cos(dtHit*67)*amp; }
+  camera.position.copy(posA); camera.lookAt(lookA);
+  const e=smooth(clamp01((p-.6)/.3));
+  if(e>0){ portrait ? camera.setViewOffset(VW,VH,0,e*.27*VH,VW,VH) : camera.setViewOffset(VW,VH,e*.2*VW,0,VW,VH); }
+  else if(camera.view && camera.view.enabled) camera.clearViewOffset();
+  dirV.subVectors(lookA,posA); dirV.y=0; const hl=dirV.length();
+  if(hl>1e-3) dirV.multiplyScalar(1/hl);
+  rim.position.set(lookA.x+dirV.x*3,lookA.y+.38,lookA.z+dirV.z*3); rim.target.position.copy(lookA);
+  rim.intensity=2.4*clamp01(hl/1.2);
+  const o=1-clamp01(p/.12);
+  title.style.opacity=o; title.style.transform=`translateY(${-58-(1-o)*14}%)`;
+  hint.style.opacity=1-clamp01(p/.04);
+  const b=smooth(clamp01((p-.8)/.2));
+  book.style.opacity=b;
+  book.style.transform=portrait?`translateY(${(1-b)*40}px)`:`translateY(calc(-50% + ${(1-b)*40}px))`;
+  renderer.render(scene,camera);
+}
+
+/* ---------- один скролл = весь удар ---------- */
+let ready=false, state='hero', p=0, anim=null, dirty=true, topSince=performance.now(), visible=true;
+function settle(s){ if(s==='hero' && state==='playing'){ vi=(vi+1)%SHOTS.length; SIM=getSim(vi); buildCamera(); }   // после отмотки — следующее разбитие
+  state=s; anim=null; lock(s==='hero'); book.classList.toggle('on',s==='booked'); book.inert=s!=='booked'; hint.style.pointerEvents=s==='hero'?'auto':'none'; dirty=true; }
+function play(d){
+  if(!ready){ if(d>0) finish(); return; }          // сцена ещё грузится — не заставляем ждать, сразу форма
+  if(state==='playing' || (d>0&&state!=='hero') || (d<0&&state!=='booked')) return;
+  state='playing'; lock(true); scrollTo(0,0); book.classList.remove('on');
+  if(d>0){ try{ localStorage.setItem('duplet-shot',String(vi)); }catch(e){} }
+  anim={from:p,to:d>0?1:0,dur:reduce?1:(d>0?3000:1200),t0:performance.now(),d};
+}
+function finish(){ p=1; settle('booked'); }            // сразу к экрану брони, без анимации
+function frame2(now){
+  if(anim){
+    const k=clamp01((now-anim.t0)/anim.dur);
+    p=anim.from+(anim.to-anim.from)*(anim.d>0?k:smooth(k));
+    if(k>=1) settle(anim.d>0?'booked':'hero');
+    dirty=true;
+  }
+  if(visible && (state==='hero' || dirty)){ apply(p,now); dirty=false; }
+}
+function frame(now){ try{ frame2(now); }catch(e){ console.error(e); } requestAnimationFrame(frame); }
+new IntersectionObserver(es=>{ visible=es[0].isIntersecting; if(visible) dirty=true; }).observe(stage);
+
+addEventListener('scroll',()=>{ if(scrollY>0) topSince=Infinity; else if(topSince===Infinity) topSince=performance.now(); },{passive:true});
+const restedAtTop=()=>scrollY<=0 && performance.now()-topSince>400;
+addEventListener('wheel',e=>{
+  if(document.querySelector('dialog[open]')) return;
+  if(state==='playing'){ e.preventDefault(); return; }
+  if(state==='hero'){ e.preventDefault(); if(e.deltaY>2) play(1); }
+  else if(restedAtTop() && e.deltaY<-2 && !e.target.closest('.book')){ e.preventDefault(); play(-1); }
+},{passive:false});
+let ty=null, tInBook=false;
+addEventListener('touchstart',e=>{ ty=e.touches[0].clientY; tInBook=!!e.target.closest('.book'); },{passive:true});
+addEventListener('touchmove',e=>{
+  if(ty===null || document.querySelector('dialog[open]')) return; const dy=ty-e.touches[0].clientY;
+  if(state!=='booked'){ if(e.cancelable) e.preventDefault(); }
+  if(state==='hero' && dy>24) play(1);
+  else if(state==='booked' && restedAtTop() && dy<-56 && !tInBook) play(-1);
+},{passive:false});
+addEventListener('keydown',e=>{
+  if(e.target.closest('input,select,textarea,dialog')) return;
+  if(['ArrowDown','PageDown',' '].includes(e.key) && state==='hero'){ e.preventDefault(); play(1); }
+  if(['ArrowUp','PageUp'].includes(e.key) && state==='booked' && scrollY<=0){ e.preventDefault(); play(-1); }
+});
+hint.addEventListener('click',()=>play(1));
+/* кнопки «Забронировать» по всей странице ведут к форме на первом экране */
+document.querySelectorAll('[data-book]').forEach(b=>b.addEventListener('click',()=>{
+  goBook(b.dataset.book);
+  if(state==='hero'){ play(1); return; }
+  if(state==='booked'){ scrollTo({top:0,behavior:reduce?'auto':'smooth'}); setTimeout(()=>document.getElementById('f-name').focus({preventScroll:true}),600); }
+}));
+/* ссылки-якоря с первого экрана: пропускаем анимацию и сразу едем к разделу */
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
+  const id=a.getAttribute('href');
+  if(id==='#top'){ e.preventDefault(); scrollTo({top:0,behavior:reduce?'auto':'smooth'}); return; }
+  if(state!=='booked'){ e.preventDefault(); finish(); requestAnimationFrame(()=>document.querySelector(id)?.scrollIntoView({behavior:reduce?'auto':'smooth'})); }
+}));
+addEventListener('resize',()=>{ buildCamera(); dirty=true; });
+buildCamera();
+/* для проверки: dupletIntro.seek(0..1, номер разбития 0..2) ставит кадр вручную */
+window.dupletIntro={ seek(v,shot){ if(shot!=null){ vi=shot; SIM=getSim(vi); buildCamera(); } anim=null; p=v; dirty=true; },
+  info:()=>SHOTS.map((_,i)=>getSim(i)).map(s=>({T:+s.T.toFixed(2),frames:s.frames.length,sunk:Array.from({length:s.N},(_,i)=>s.frames[s.frames.length-1][i*7+6]>0?i:-1).filter(i=>i>=0)})) };
+try{ history.scrollRestoration='manual'; }catch(e){}   // после обновления страницы всегда начинаем с первого экрана, перед разбитием
+if(location.hash && location.hash!=='#top') finish(); else { lock(true); scrollTo(0,0); }
+/* шейдеры собираем в фоне, чтобы страница не замирала на слабых видеокартах; стол проявляется, когда готов */
+canvas.style.opacity=0; canvas.style.transition='opacity .7s ease';
+try{ await renderer.compileAsync(scene,camera); }catch(e){}
+ready=true; dirty=true; canvas.style.opacity=1;
+(window.requestIdleCallback||setTimeout)(()=>{ try{ getSim((vi+1)%SHOTS.length); }catch(e){} });
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
