@@ -17,3 +17,22 @@ AddType image/webp .webp
   ExpiresByType font/woff2 "access plus 1 month"
   ExpiresByType text/javascript "access plus 1 month"
 </IfModule>
+
+# --- Защита (аудит 2026-11-13) ---
+# Без списка файлов в папках
+Options -Indexes
+
+# Бэкапы, служебные и скрытые файлы наружу не отдаём
+<FilesMatch "(^\.|-before-|\.(bak|old|orig|log|env|db|sqlite|py|md|bat|toml|lock)$)">
+  Require all denied
+</FilesMatch>
+
+# Заголовки безопасности. CSP здесь нет: хэши скриптов меняются при каждой правке index.html,
+# CSP строит сервер (bot/web/api.py). На чистом Apache без бота её нужно добавить отдельно.
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "DENY"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), camera=(), microphone=()"
+  Header always set Cross-Origin-Opener-Policy "same-origin"
+</IfModule>

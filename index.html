@@ -281,10 +281,11 @@ dialog::backdrop{background:rgba(4,10,8,.72);backdrop-filter:blur(3px)}
   .nav.solid{background:none;backdrop-filter:none;padding:14px 16px} /* шапка на телефоне без фона */
   .nav .logo{transition:opacity .3s,visibility .3s}
   .nav.past .logo{opacity:0;visibility:hidden} /* после первого экрана логотип прячем, остаётся кнопка */
-  /* кнопка брони: на главном экране скрыта (там своя), после первого экрана висит справа снизу */
-  .nav .btn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));padding:16px 22px;box-shadow:0 8px 24px rgba(0,0,0,.45);
-    opacity:0;visibility:hidden;transform:translateY(14px);transition:opacity .3s,visibility .3s,transform .3s}
-  .nav.past .btn{opacity:1;visibility:visible;transform:none}
+  /* кнопка брони: появляется с блока «Бар и кухня», слева вверху на месте логотипа, чуть прозрачная */
+  .nav .btn{position:fixed;left:16px;top:12px;padding:13px 18px;box-shadow:0 6px 18px rgba(0,0,0,.35);
+    opacity:0;visibility:hidden;transform:translateY(-10px);transition:opacity .3s,visibility .3s,transform .3s}
+  .nav.atbar .btn{opacity:.85;visibility:visible;transform:none}
+  footer .fh{display:block} footer .sep{display:none} /* часы работы в подвале двумя строками */
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -342,6 +343,14 @@ footer .legal button:hover{color:var(--lamp)}
 .cookie a{color:var(--chalk)}
 .ck-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px}
 .cookie .btn{flex:1 1 160px;padding:13px 14px;min-height:44px}
+/* параллакс: фоновые слои едут медленнее текста */
+.prices{background:#0A1512;overflow:hidden;overflow:clip}
+.par-bg{position:absolute;inset:-150px 0;z-index:-2;background:url(img/g/hero.webp) center 30%/cover;will-change:translate}
+.dark{isolation:isolate;overflow:hidden;overflow:clip}
+.par-glow{position:absolute;inset:-260px 0;z-index:-1;pointer-events:none;will-change:translate;
+  background:radial-gradient(46vw 46vw at 88% 30%,rgba(217,164,65,.13),transparent 70%),radial-gradient(40vw 40vw at 6% 68%,rgba(35,149,111,.16),transparent 70%)}
+#reviews .par-glow{background:radial-gradient(44vw 44vw at 10% 26%,rgba(217,164,65,.12),transparent 70%),radial-gradient(42vw 42vw at 92% 74%,rgba(35,149,111,.15),transparent 70%)}
+img[data-par]{height:calc(100% + 56px);margin-top:-28px;will-change:translate}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"EntertainmentBusiness","name":"Дуплет","description":"Бар-бильярдная: русский бильярд, американка, комната «Люкс».","image":"img/g/hero.webp","telephone":"+7 913 772-XX-XX","address":{"@type":"PostalAddress","streetAddress":"ул. Кропоткина, 118, цокольный этаж","addressLocality":"Новосибирск","addressCountry":"RU"},"geo":{"@type":"GeoCoordinates","latitude":55.055767,"longitude":82.929673},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"17:00","closes":"01:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":["Saturday","Sunday"],"opens":"15:00","closes":"01:00"}],"sameAs":["https://t.me/duplet_nsk","https://2gis.ru/novosibirsk/firm/141265769932277"]}
@@ -368,7 +377,6 @@ footer .legal button:hover{color:var(--lamp)}
   <canvas id="c" aria-hidden="true"></canvas>
   <div class="vignette"></div>
   <div class="title" id="title">
-    <div class="kicker">Новосибирск · Кропоткина, 118</div>
     <h1>Дуплет<em>бар-бильярдная</em></h1>
     <button class="btn hero-cta" type="button" data-book>Забронировать стол</button>
   </div>
@@ -395,7 +403,7 @@ footer .legal button:hover{color:var(--lamp)}
       </div>
       <div class="row">
         <div><label for="f-name">Имя</label><input id="f-name" name="name" type="text" autocomplete="name"></div>
-        <div><label for="f-phone">Телефон</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+7"></div>
+        <div><label for="f-phone">Телефон</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+7" value="+7 "></div>
       </div>
       <div class="hp" aria-hidden="true"><label for="f-website">Сайт</label><input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
       <label class="agree" for="f-consent"><input id="f-consent" name="consent" type="checkbox"><span>Даю <a href="consent.html" target="_blank">согласие на обработку персональных данных</a></span></label>
@@ -410,6 +418,7 @@ footer .legal button:hover{color:var(--lamp)}
 
 <!-- ============ столы и цены ============ -->
 <section class="s prices" id="tables">
+  <div class="par-bg" data-par=".12" data-par-max="140" aria-hidden="true"></div>
   <div class="wrap">
     <div class="head rv">
       <div>
@@ -443,6 +452,7 @@ footer .legal button:hover{color:var(--lamp)}
 
 <!-- ============ бар и кухня ============ -->
 <section class="s dark" id="bar">
+  <div class="par-glow" data-par=".22" data-par-max="240" aria-hidden="true"></div>
   <div class="wrap">
     <div class="head rv">
       <div>
@@ -451,9 +461,9 @@ footer .legal button:hover{color:var(--lamp)}
     </div>
     <div class="bar-grid">
       <div class="shots rv">
-        <figure><img src="img/g/shashlik.webp" width="720" height="720" decoding="async" alt="Шашлык с гриля" loading="lazy"></figure>
-        <figure><img src="img/g/bar.webp" width="960" height="720" decoding="async" alt="Барная стойка с холодильником и кранами" loading="lazy" style="object-position:35% 50%"></figure>
-        <figure><img src="img/lamp-flower.webp" width="1280" height="720" decoding="async" alt="Настенная лампа над столиком с лавандой" loading="lazy"></figure>
+        <figure><img data-par=".07" data-par-max="26" src="img/g/shashlik.webp" width="720" height="720" decoding="async" alt="Шашлык с гриля" loading="lazy"></figure>
+        <figure><img data-par=".07" data-par-max="26" src="img/g/bar.webp" width="960" height="720" decoding="async" alt="Барная стойка с холодильником и кранами" loading="lazy" style="object-position:35% 50%"></figure>
+        <figure><img data-par=".07" data-par-max="26" src="img/lamp-flower.webp" width="1280" height="720" decoding="async" alt="Настенная лампа над столиком с лавандой" loading="lazy"></figure>
       </div>
       <div class="rv">
         <ul class="menu">
@@ -482,10 +492,10 @@ footer .legal button:hover{color:var(--lamp)}
       </div>
     </div>
     <div class="cards rv">
-      <article class="card"><img src="img/g/atm-corner.webp" width="576" height="720" decoding="async" alt="Столик с лавандой у стены в рейках" loading="lazy"><div><h3>Мафия</h3><i>вход 300 ₽</i></div></article>
-      <article class="card"><img src="img/hall-long.webp" width="1280" height="720" decoding="async" alt="Зал клуба вечером" loading="lazy"><div><h3>Живая музыка</h3><i>по анонсу</i></div></article>
-      <article class="card"><img src="img/g/atm-hall.webp" width="576" height="720" decoding="async" alt="Зал под круглыми лампами" loading="lazy"><div><h3>Турниры</h3><i>по анонсу</i></div></article>
-      <article class="card"><img src="img/vip.webp" width="1280" height="720" decoding="async" alt="Комната «Люкс» со своим столом" loading="lazy"><div><h3>Дни рождения</h3><i>по брони</i></div></article>
+      <article class="card"><img data-par=".07" data-par-max="26" src="img/g/atm-corner.webp" width="576" height="720" decoding="async" alt="Столик с лавандой у стены в рейках" loading="lazy"><div><h3>Мафия</h3><i>вход 300 ₽</i></div></article>
+      <article class="card"><img data-par=".07" data-par-max="26" src="img/hall-long.webp" width="1280" height="720" decoding="async" alt="Зал клуба вечером" loading="lazy"><div><h3>Живая музыка</h3><i>по анонсу</i></div></article>
+      <article class="card"><img data-par=".07" data-par-max="26" src="img/g/atm-hall.webp" width="576" height="720" decoding="async" alt="Зал под круглыми лампами" loading="lazy"><div><h3>Турниры</h3><i>по анонсу</i></div></article>
+      <article class="card"><img data-par=".07" data-par-max="26" src="img/vip.webp" width="1280" height="720" decoding="async" alt="Комната «Люкс» со своим столом" loading="lazy"><div><h3>Дни рождения</h3><i>по брони</i></div></article>
     </div>
     <div class="actions rv" style="margin-top:40px"><a class="btn" href="https://t.me/duplet_nsk" rel="noopener">Наш Telegram-канал</a></div>
   </div>
@@ -493,6 +503,7 @@ footer .legal button:hover{color:var(--lamp)}
 
 <!-- ============ отзывы ============ -->
 <section class="s dark" id="reviews">
+  <div class="par-glow" data-par=".22" data-par-max="240" aria-hidden="true"></div>
   <div class="wrap">
     <div class="head rv">
       <div>
@@ -574,7 +585,7 @@ footer .legal button:hover{color:var(--lamp)}
       <a href="https://t.me/duplet_nsk" rel="noopener">Telegram</a>
       <a href="https://2gis.ru/novosibirsk/firm/141265769932277" rel="noopener">2ГИС</a>
     </nav>
-    <p>Новосибирск, Кропоткина, 118 · Пн–Пт 17:00–01:00, Сб–Вс 15:00–01:00</p>
+    <p>Новосибирск, Кропоткина, 118<span class="sep"> · </span><span class="fh">Пн–Пт 17:00–01:00</span><span class="sep">, </span><span class="fh">Сб–Вс 15:00–01:00</span></p>
     <div class="legal">
       <p class="todo">[Демо] Сведения о владельце: ООО «…» или ИП …, ОГРН …, ИНН …, юридический адрес … Заполнить до запуска.</p>
       <nav aria-label="Документы">
@@ -624,7 +635,7 @@ footer .legal button:hover{color:var(--lamp)}
 
   /* шапка и мобильная панель */
   const nav = $('nav'), dock = $('dock');
-  const onScroll = () => { nav.classList.toggle('solid', scrollY > 8); nav.classList.toggle('past', scrollY > innerHeight * .8); dock.classList.toggle('show', scrollY > innerHeight * .8); };
+  const onScroll = () => { nav.classList.toggle('solid', scrollY > 8); nav.classList.toggle('past', scrollY > innerHeight * .8); nav.classList.toggle('atbar', $('bar').getBoundingClientRect().top < innerHeight * .6); dock.classList.toggle('show', scrollY > innerHeight * .8); };
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
   /* появление блоков */
@@ -683,7 +694,7 @@ footer .legal button:hover{color:var(--lamp)}
         const hold = new Date(start.getTime() + HOLD_MINUTES * 60000);
         done.textContent = 'Стол забронирован! Бронь №' + data.id + ': ' + data.table + ', ' + dayText + ', ' + hm(start) + '–' + hm(end) + '.\n\n' +
           'Стол держим ' + HOLD_MINUTES + ' минут от начала брони — до ' + hm(hold) + '. Если не успеваете, позвоните: +7 913 772-XX-XX, иначе стол могут отдать другим гостям.';
-        done.hidden = false; f.name.value = ''; f.phone.value = ''; f.consent.checked = false; loadTimes();
+        done.hidden = false; f.name.value = ''; f.phone.value = '+7 '; f.consent.checked = false; loadTimes();
       } else { err.textContent = (data.error || 'Не получилось забронировать.') + (r.status >= 500 ? ' ' + CALL : ''); if (r.status === 409) loadTimes(); }
     } catch (_) { err.textContent = 'Нет связи с сервером. ' + CALL; }
     finally { submit.disabled = false; submit.textContent = 'Забронировать'; }
@@ -742,6 +753,28 @@ footer .legal button:hover{color:var(--lamp)}
   $('cookie-open').addEventListener('click', () => { box.hidden = false; box.querySelector('button').focus(); });
   const saved = read();
   if (!saved) box.hidden = false; else if (saved.analytics) loadAnalytics();
+})();
+</script>
+
+<script>
+/* параллакс при прокрутке: слой с data-par отстаёт от своего блока */
+(() => {
+  if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  const items = [...document.querySelectorAll('[data-par]')].map(el => ({
+    el, k: parseFloat(el.dataset.par) || .1, max: parseFloat(el.dataset.parMax) || 1e4,
+    host: el.closest('figure,.card,section') || el }));
+  let queued = false;
+  const run = () => {
+    queued = false; const vh = innerHeight;
+    for (const it of items) {
+      const r = it.host.getBoundingClientRect();
+      if (r.bottom < -300 || r.top > vh + 300) continue;
+      const y = Math.max(-it.max, Math.min(it.max, (vh / 2 - (r.top + r.height / 2)) * it.k));
+      it.el.style.translate = '0 ' + y.toFixed(1) + 'px';
+    }
+  };
+  const ask = () => { if (!queued) { queued = true; requestAnimationFrame(run); } };
+  addEventListener('scroll', ask, { passive: true }); addEventListener('resize', ask); run();
 })();
 </script>
 
@@ -905,9 +938,9 @@ for(const x of [-1.15,0,1.15]){
   scene.add(s,s.target);
 }
 /* контурный свет: низкий, навстречу камере — обводит шары, почти не трогает сукно */
-const rim=new THREE.DirectionalLight(0xBFE4FF,2.4); scene.add(rim,rim.target);
-const rimSide=new THREE.DirectionalLight(0xFFC98A,0.7); rimSide.position.set(.5,.3,-3); scene.add(rimSide);
-const rimSide2=new THREE.DirectionalLight(0x9FD8FF,0.55); rimSide2.position.set(-.5,.3,3); scene.add(rimSide2);
+const rim=new THREE.DirectionalLight(0xBFE4FF,3.4); scene.add(rim,rim.target);
+const rimSide=new THREE.DirectionalLight(0xFFC98A,1.25); rimSide.position.set(.5,.3,-3); scene.add(rimSide);
+const rimSide2=new THREE.DirectionalLight(0x9FD8FF,1.0); rimSide2.position.set(-.5,.3,3); scene.add(rimSide2);
 
 function canvasTex(w,h,draw,rx=1,ry=1){
   const c=document.createElement('canvas'); c.width=w; c.height=h; draw(c.getContext('2d'),w,h);
@@ -1021,6 +1054,18 @@ box(.026,.026,.026, 1.05,RH+.013,-(W+CW+.09),chalkMat).rotation.y=-.3;
 /* зал: пол, стены в рейках, бра со светом вверх и вниз — как в клубе */
 const floor=new THREE.Mesh(new THREE.PlaneGeometry(30,30),new THREE.MeshStandardMaterial({color:0x0A0F0D,roughness:.42,envMapIntensity:.25}));
 floor.rotation.x=-Math.PI/2; floor.position.y=-.82; floor.receiveShadow=true; scene.add(floor);
+{ const GW=2*OX+3.2, GH=2*OZ+3.2;
+  const under=canvasTex(512,320,(g,w,h)=>{
+    const img=g.createImageData(w,h), d=img.data, hx=OX-.06, hz=OZ-.06;
+    for(let y=0;y<h;y++) for(let x=0;x<w;x++){
+      const X=(x/w-.5)*GW, Z=(y/h-.5)*GH, dx=Math.max(0,Math.abs(X)-hx), dz=Math.max(0,Math.abs(Z)-hz), dd=Math.sqrt(dx*dx+dz*dz);
+      const plank=.82+.18*((Math.floor((Z+50)/.14)*7+Math.floor((X+50+(Math.floor((Z+50)/.14)%2)*.45)/.9)*13)%5)/4;
+      const seam=(((Z+50)/.14)%1)<.06?.72:1;
+      const a=Math.exp(-dd/.42)*Math.max(0,Math.min(1,1-(dd-1.25)/.3))*plank*seam;
+      const i=(y*w+x)*4; d[i]=255; d[i+1]=168; d[i+2]=84; d[i+3]=a*255; }
+    g.putImageData(img,0,0); });
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(GW,GH),new THREE.MeshBasicMaterial({map:under,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:.5,toneMapped:false}));
+  m.rotation.x=-Math.PI/2; m.position.y=-.815; scene.add(m); }
 const wallMat=new THREE.MeshStandardMaterial({map:slatTex,roughness:.75,envMapIntensity:.08});
 function wall(w,x,z,ry){ const m=new THREE.Mesh(new THREE.PlaneGeometry(w,3.4),wallMat); m.position.set(x,.88,z); m.rotation.y=ry; scene.add(m); }
 wall(10,5.4,0,-Math.PI/2); wall(11,0,-4.6,0); wall(11,0,4.6,Math.PI);
@@ -1056,12 +1101,20 @@ function ballTexture(n){
   });
 }
 const ballGeo=new THREE.SphereGeometry(R,small?32:56,small?20:36);
+/* контур: край шара светится, слева холодным, справа тёплым — как от ламп за спиной */
+const rimU={value:1.1};
+function rimify(mat){ mat.onBeforeCompile=sh=>{ sh.uniforms.uRim=rimU;
+  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nuniform float uRim;')
+    .replace('#include <emissivemap_fragment>',`#include <emissivemap_fragment>
+    { float fr=pow(1.0-clamp(dot(normalize(vViewPosition),normal),0.0,1.0),2.4);
+      float shade=smoothstep(.8,-.3,dot(normal,normalize((viewMatrix*vec4(0.,1.,0.,0.)).xyz)));   // только там, куда не бьют лампы
+      totalEmissiveRadiance+=mix(vec3(.3,.72,1.0),vec3(1.0,.62,.26),smoothstep(-.5,.5,normal.x))*fr*shade*uRim; }`); }; return mat; }
 const balls=[];
 for(let i=0;i<SIM.N;i++){
   const mat=new THREE.MeshPhysicalMaterial(i===0
     ? {color:0x4A0A17,roughness:.12,clearcoat:1,clearcoatRoughness:.03,envMapIntensity:.7}
     : {map:ballTexture(i),roughness:.15,clearcoat:1,clearcoatRoughness:.04,envMapIntensity:.65});
-  const m=new THREE.Mesh(ballGeo,mat); m.castShadow=true; scene.add(m); balls.push(m);
+  const m=new THREE.Mesh(ballGeo,rimify(mat)); m.castShadow=true; scene.add(m); balls.push(m);
 }
 /* пятно контактной тени под шаром: без него шары будто висят над сукном */
 const blobTex=canvasTex(64,64,(g)=>{ const r=g.createRadialGradient(32,32,2,32,32,32);
@@ -1109,6 +1162,14 @@ function curveParam(p){
 
 /* ---------- кадр по прогрессу p: 0 — пирамида, 1 — экран брони ---------- */
 const qa=new THREE.Quaternion(), qb=new THREE.Quaternion();
+/* параллакс: камера чуть смещается за курсором, при прокрутке стол уезжает медленнее страницы */
+const par={tx:0,ty:0,x:0,y:0,last:0,on:false}, parR=new THREE.Vector3(), parU=new THREE.Vector3(), parD=new THREE.Vector3(), UP=new THREE.Vector3(0,1,0);
+if(!reduce){
+  addEventListener('pointermove',e=>{ if(e.pointerType!=='mouse') return; par.tx=clamp01(e.clientX/innerWidth)*2-1; par.ty=clamp01(e.clientY/innerHeight)*2-1; par.on=scrollY<innerHeight*.6; },{passive:true});
+  document.documentElement.addEventListener('pointerleave',()=>{ par.tx=par.ty=0; par.on=false; });
+  addEventListener('blur',()=>{ par.tx=par.ty=0; par.on=false; });
+  addEventListener('scroll',()=>{ if(scrollY<=innerHeight*1.2) canvas.style.transform=scrollY>0?`translate3d(0,${(scrollY*.32).toFixed(1)}px,0)`:''; },{passive:true});
+}
 function apply(p,now){
   const u=clamp01(p/.9), t=SIM.T*Math.pow(u,1.15);
   const ff=Math.min(SIM.frames.length-1.001,t*SIM.fps), i0=Math.floor(ff), k=ff-i0;
@@ -1136,16 +1197,24 @@ function apply(p,now){
   posA.z+=Math.sin(s*.45)*.018*idle; posA.y+=Math.sin(s*.31)*.006*idle;
   const dtHit=t-SIM.tHit;
   if(dtHit>0 && dtHit<.9){ const amp=.014*Math.exp(-dtHit*7); posA.y+=Math.sin(dtHit*85)*amp; posA.z+=Math.cos(dtHit*67)*amp; }
+  if(par.x||par.y){
+    parD.subVectors(lookA,posA); const dist=parD.length(); parD.multiplyScalar(1/dist);
+    parR.crossVectors(parD,UP).normalize(); parU.crossVectors(parR,parD);
+    const lean=Math.abs(parD.y)*.8;                      // вид сверху: двигаем и точку взгляда, иначе стол крутится вокруг оси
+    const amp=dist*(1-.6*Math.abs(parD.y)); parR.multiplyScalar(par.x*amp*.072).addScaledVector(parU,-par.y*amp*.046);
+    posA.add(parR); lookA.addScaledVector(parR,lean);
+  }
   camera.position.copy(posA); camera.lookAt(lookA);
   const e=smooth(clamp01((p-.6)/.3));
   if(e>0){ portrait ? camera.setViewOffset(VW,VH,0,e*.27*VH,VW,VH) : camera.setViewOffset(VW,VH,e*.2*VW,0,VW,VH); }
   else if(camera.view && camera.view.enabled) camera.clearViewOffset();
+  rimU.value=1.1+(dtHit>0?2.2*Math.exp(-dtHit*5):0);       // в момент удара контур вспыхивает
   dirV.subVectors(lookA,posA); dirV.y=0; const hl=dirV.length();
   if(hl>1e-3) dirV.multiplyScalar(1/hl);
   rim.position.set(lookA.x+dirV.x*3,lookA.y+.38,lookA.z+dirV.z*3); rim.target.position.copy(lookA);
-  rim.intensity=2.4*clamp01(hl/1.2);
+  rim.intensity=3.4*clamp01(hl/1.2);
   const o=1-clamp01(p/.12);
-  title.style.opacity=o; title.style.transform=`translateY(${-58-(1-o)*14}%)`;
+  title.style.opacity=o; title.style.transform=`translate(${(-par.x*26).toFixed(1)}px,${-58-(1-o)*14}%)`;
   hint.style.opacity=1-clamp01(p/.04);
   const b=smooth(clamp01((p-.8)/.2));
   book.style.opacity=b;
@@ -1172,6 +1241,9 @@ function frame2(now){
     if(k>=1) settle(anim.d>0?'booked':'hero');
     dirty=true;
   }
+  const dtp=Math.min(.1,(now-par.last)/1000||0); par.last=now;
+  if(Math.abs(par.tx-par.x)>.002 || Math.abs(par.ty-par.y)>.002){ const q=1-Math.exp(-dtp*5); par.x+=(par.tx-par.x)*q; par.y+=(par.ty-par.y)*q; dirty=true; }
+  else if(par.x!==par.tx || par.y!==par.ty){ par.x=par.tx; par.y=par.ty; dirty=true; }
   if(visible && (state==='hero' || dirty)){ apply(p,now); dirty=false; }
 }
 function frame(now){ try{ frame2(now); }catch(e){ console.error(e); } requestAnimationFrame(frame); }
