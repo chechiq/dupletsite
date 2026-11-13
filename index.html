@@ -8,12 +8,16 @@
 <meta name="theme-color" content="#0D1B18">
 <meta property="og:title" content="Дуплет — бар-бильярдная в Новосибирске">
 <meta property="og:description" content="Русский бильярд, американка и комната «Люкс». Бронь стола онлайн.">
-<meta property="og:image" content="img/g/hero.webp">
+<!-- TODO перед запуском: заменить EXAMPLE.invalid на настоящий домен (canonical, og:url, og:image, JSON-LD ниже) -->
+<link rel="canonical" href="https://EXAMPLE.invalid/">
+<meta property="og:url" content="https://EXAMPLE.invalid/">
+<meta property="og:image" content="https://EXAMPLE.invalid/img/g/hero.webp">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27 fill=%27%230A1C17%27/%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2710%27 fill=%27%237A1F2B%27/%3E%3Ccircle cx=%2713%27 cy=%2713%27 r=%272.6%27 fill=%27%23F4F0E8%27 opacity=%27.85%27/%3E%3C/svg%3E">
 <link rel="preload" href="img/g/hero.webp" as="image" type="image/webp">
 <script>/* three.js заранее грузим только на компе и планшете, телефону он не нужен */ if(matchMedia('(min-width:761px)').matches){const l=document.createElement('link');l.rel='modulepreload';l.href='vendor/three.module.min.js';document.head.appendChild(l);}</script>
 <link rel="preload" href="fonts/golos-text.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="fonts/unbounded.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="fonts/martian-mono.woff" as="font" type="font/woff" crossorigin>
 <style>
 @font-face{font-family:"Martian Mono";src:url(fonts/martian-mono.woff) format("woff");font-weight:100 800;font-stretch:75% 112.5%;font-display:swap}
 @font-face{font-family:"Golos Text";src:url(fonts/golos-text.woff) format("woff");font-weight:400 900;font-display:swap}
@@ -30,7 +34,7 @@ body{background:var(--night);color:var(--chalk);font:400 16px/1.6 var(--body);ov
 img{display:block;max-width:100%}
 a{color:inherit}
 :focus-visible{outline:2px solid var(--lamp);outline-offset:3px;border-radius:3px}
-.skip{position:absolute;left:-999px;top:8px;background:var(--lamp);color:var(--night);padding:8px 14px;z-index:99}
+.skip{position:absolute;left:-999px;top:8px;background:var(--lamp);color:var(--night);padding:10px 14px;z-index:99}
 .skip:focus{left:8px}
 
 /* ---------- шапка ---------- */
@@ -73,26 +77,26 @@ h1 em{display:block;font-style:italic;font-size:.46em;color:var(--lamp);margin-t
 
 /* ---------- бронь ---------- */
 .book{position:absolute;z-index:4;right:var(--pad);top:calc(50% + 24px);width:min(410px,35vw);max-height:calc(100svh - 110px);overflow:auto;
-  background:var(--cream);color:var(--ink);padding:28px 30px 22px;opacity:0;pointer-events:none;
+  background:var(--cream);color:var(--ink);padding:24px 30px 16px;opacity:0;pointer-events:none;
   transform:translateY(-50%);box-shadow:0 30px 80px rgba(0,0,0,.5);outline:1px solid rgba(255,255,255,.55);outline-offset:-7px}
 .book.on{pointer-events:auto}
 .book .kicker{color:var(--gold);margin-bottom:10px;letter-spacing:.26em}
-.book h2{font:400 clamp(28px,2.7vw,40px)/1 var(--serif);margin-bottom:10px}
+.book h2{font:400 clamp(28px,2.7vw,40px)/1 var(--serif);margin-bottom:8px}
 .book h2 em{font-style:italic;color:var(--gold)}
-.book label{display:block;font:500 10px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin:12px 0 2px}
+.book label{display:block;font:500 10px/1 var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin:9px 0 2px}
 .book input,.book select{width:100%;font:400 16px/1.3 var(--body);color:var(--ink);background:transparent;border:0;
   border-bottom:1px solid #BDB3A4;padding:6px 0;border-radius:0;outline:0;min-height:44px}
 .book input:focus,.book select:focus{border-bottom-color:var(--gold)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.sum{margin-top:14px;font:500 15px/1.3 var(--body)}
-.book .btn{width:100%;margin-top:12px;padding:17px}
+.sum{margin-top:10px;font:500 15px/1.3 var(--body)}
+.book .btn{width:100%;margin-top:10px;padding:17px}
 .hero-cta,.book-x{display:none} /* видны только на телефоне в запасном режиме */
 .book .btn:disabled{opacity:.6;cursor:default}
 .form-error{color:#A3261B;font-size:14px;line-height:1.4;margin-top:10px}
 .form-error:empty{display:none}
 .form-done{background:#E3EBDD;border-left:3px solid var(--felt);padding:12px 14px;margin-top:12px;font-size:14px;line-height:1.5;white-space:pre-line}
-.book small{display:block;margin-top:12px;font-size:12px;line-height:1.5;color:var(--mute)}
+.book small{display:block;margin-top:8px;font-size:12px;line-height:1.5;color:var(--mute)}
 .book small a{color:var(--ink);display:inline-block;padding-block:14px;margin-block:-14px}
 
 /* ---------- общие блоки ---------- */
@@ -213,7 +217,7 @@ footer .wrap{display:flex;flex-wrap:wrap;gap:24px 56px;align-items:end;justify-c
 footer .big{font:400 clamp(34px,4vw,56px)/1 var(--serif);color:var(--chalk)}
 footer .big em{color:var(--lamp)}
 footer nav{display:flex;flex-wrap:wrap;gap:10px 26px}
-footer a{text-decoration:none;font-size:15px;display:inline-flex;align-items:center;min-height:44px}
+footer a{text-decoration:none;font-size:15px;display:inline-flex;align-items:center;min-height:44px;min-width:44px}
 footer a:hover{color:var(--lamp)}
 footer p{width:100%;font-size:13px;opacity:.7}
 
@@ -257,7 +261,7 @@ dialog::backdrop{background:rgba(4,10,8,.72);backdrop-filter:blur(3px)}
 @media (max-width:760px){
   .nav .tel{display:none}
   .nav{padding:14px 16px}
-  .nav .btn{padding:13px 18px}
+  .nav .btn{display:none}
   .title p{font-size:15px}
   .book{left:10px;right:10px;top:auto;bottom:10px;width:auto;transform:none;padding:16px 20px 12px;max-height:80svh}
   .book .kicker{display:none}
@@ -324,9 +328,9 @@ footer .big em{margin-left:-.25em}
 .rate .star{display:inline-block;width:.66em;height:.66em;fill:currentColor;vertical-align:-.02em;margin-right:.14em}
 .rate b .cm{display:inline;margin:0 .04em 0 -.02em;font-family:var(--body);font-weight:800;font-size:inherit;color:inherit;max-width:none}
 /* юридическое: согласие, схема вместо карты, реквизиты, cookie */
-.book label.agree{display:flex;gap:10px;align-items:flex-start;margin:14px 0 0;font:400 13px/1.4 var(--body);letter-spacing:0;text-transform:none;color:var(--ink);cursor:pointer}
+.book label.agree{display:flex;gap:10px;align-items:flex-start;margin:10px 0 0;font:400 13px/1.4 var(--body);letter-spacing:0;text-transform:none;color:var(--ink);cursor:pointer}
 .book .agree input{flex:none;width:20px;height:20px;margin:0;padding:0;border:0;accent-color:var(--felt);cursor:pointer}
-.book .agree a{color:var(--ink)}
+.book .agree a{color:var(--ink);display:inline-block;padding-block:14px;margin-block:-14px}
 .mapcard{position:relative;overflow:hidden;filter:none}
 .mapcard svg{position:absolute;inset:0;width:100%;height:100%}
 .mapcap{position:absolute;left:18px;right:18px;bottom:18px;background:var(--cream);color:var(--ink);padding:14px 16px;display:flex;flex-direction:column;gap:2px;font-size:14px}
@@ -340,9 +344,18 @@ footer .legal button:hover{color:var(--lamp)}
 .cookie[hidden],.cookie [hidden]{display:none}
 .cookie h2{font:700 16px/1.3 var(--body);margin-bottom:6px;letter-spacing:0;word-spacing:0}
 .cookie p{color:var(--chalk-dim)}
-.cookie a{color:var(--chalk)}
+.cookie a{color:var(--chalk);display:inline-block;padding-block:14px;margin-block:-14px}
 .ck-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px}
 .cookie .btn{flex:1 1 160px;padding:13px 14px;min-height:44px}
+@media (max-width:760px){
+  .cookie{left:8px;right:8px;bottom:8px;padding:12px 14px;font-size:12px;line-height:1.4}
+  .cookie h2{font-size:14px;margin-bottom:4px}
+  .ck-btns{flex-wrap:nowrap;margin-top:10px}
+  .cookie .btn{flex:1 1 0;padding:10px 8px;letter-spacing:.08em}
+  /* пока баннер на экране (--ck-h задаёт скрипт), заголовок с кнопкой и окно брони стоят выше него */
+  .stage.nogl .title{top:calc(50% - var(--ck-h,0px)/2)}
+  .stage.nogl .book.open{padding-bottom:calc(24px + var(--ck-h,0px) + env(safe-area-inset-bottom))}
+}
 /* параллакс: фоновые слои едут медленнее текста */
 .prices{background:#0A1512;overflow:hidden;overflow:clip}
 .par-bg{position:absolute;inset:-150px 0;z-index:-2;background:url(img/g/hero.webp) center 30%/cover;will-change:translate}
@@ -353,7 +366,7 @@ footer .legal button:hover{color:var(--lamp)}
 img[data-par]{height:calc(100% + 56px);margin-top:-28px;will-change:translate}
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"EntertainmentBusiness","name":"Дуплет","description":"Бар-бильярдная: русский бильярд, американка, комната «Люкс».","image":"img/g/hero.webp","telephone":"+7 913 772-XX-XX","address":{"@type":"PostalAddress","streetAddress":"ул. Кропоткина, 118, цокольный этаж","addressLocality":"Новосибирск","addressCountry":"RU"},"geo":{"@type":"GeoCoordinates","latitude":55.055767,"longitude":82.929673},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"17:00","closes":"01:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":["Saturday","Sunday"],"opens":"15:00","closes":"01:00"}],"sameAs":["https://t.me/duplet_nsk","https://2gis.ru/novosibirsk/firm/141265769932277"]}
+{"@context":"https://schema.org","@type":"EntertainmentBusiness","name":"Дуплет","description":"Бар-бильярдная: русский бильярд, американка, комната «Люкс».","url":"https://EXAMPLE.invalid/","image":"https://EXAMPLE.invalid/img/g/hero.webp","telephone":"+7 913 772-XX-XX","address":{"@type":"PostalAddress","streetAddress":"ул. Кропоткина, 118, цокольный этаж","addressLocality":"Новосибирск","addressCountry":"RU"},"geo":{"@type":"GeoCoordinates","latitude":55.055767,"longitude":82.929673},"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"17:00","closes":"01:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":["Saturday","Sunday"],"opens":"15:00","closes":"01:00"}],"sameAs":["https://t.me/duplet_nsk","https://2gis.ru/novosibirsk/firm/141265769932277"]}
 </script>
 </head>
 <body>
@@ -463,7 +476,7 @@ img[data-par]{height:calc(100% + 56px);margin-top:-28px;will-change:translate}
       <div class="shots rv">
         <figure><img data-par=".07" data-par-max="26" src="img/g/shashlik.webp" width="720" height="720" decoding="async" alt="Шашлык с гриля" loading="lazy"></figure>
         <figure><img data-par=".07" data-par-max="26" src="img/g/bar.webp" width="960" height="720" decoding="async" alt="Барная стойка с холодильником и кранами" loading="lazy" style="object-position:35% 50%"></figure>
-        <figure><img data-par=".07" data-par-max="26" src="img/lamp-flower.webp" width="1280" height="720" decoding="async" alt="Настенная лампа над столиком с лавандой" loading="lazy"></figure>
+        <figure><img data-par=".07" data-par-max="26" src="img/lamp-flower-780.webp" srcset="img/lamp-flower-520.webp 520w, img/lamp-flower-780.webp 780w" sizes="(max-width:760px) 45vw, 22vw" width="780" height="720" decoding="async" alt="Настенная лампа над столиком с лавандой" loading="lazy"></figure>
       </div>
       <div class="rv">
         <ul class="menu">
@@ -493,9 +506,9 @@ img[data-par]{height:calc(100% + 56px);margin-top:-28px;will-change:translate}
     </div>
     <div class="cards rv">
       <article class="card"><img data-par=".07" data-par-max="26" src="img/g/atm-corner.webp" width="576" height="720" decoding="async" alt="Столик с лавандой у стены в рейках" loading="lazy"><div><h3>Мафия</h3><i>вход 300 ₽</i></div></article>
-      <article class="card"><img data-par=".07" data-par-max="26" src="img/hall-long.webp" width="1280" height="720" decoding="async" alt="Зал клуба вечером" loading="lazy"><div><h3>Живая музыка</h3><i>по анонсу</i></div></article>
+      <article class="card"><img data-par=".07" data-par-max="26" src="img/hall-long-460.webp" srcset="img/hall-long-384.webp 384w, img/hall-long-460.webp 460w" sizes="(max-width:760px) 45vw, 25vw" width="460" height="720" decoding="async" alt="Зал клуба вечером" loading="lazy"><div><h3>Живая музыка</h3><i>по анонсу</i></div></article>
       <article class="card"><img data-par=".07" data-par-max="26" src="img/g/atm-hall.webp" width="576" height="720" decoding="async" alt="Зал под круглыми лампами" loading="lazy"><div><h3>Турниры</h3><i>по анонсу</i></div></article>
-      <article class="card"><img data-par=".07" data-par-max="26" src="img/vip.webp" width="1280" height="720" decoding="async" alt="Комната «Люкс» со своим столом" loading="lazy"><div><h3>Дни рождения</h3><i>по брони</i></div></article>
+      <article class="card"><img data-par=".07" data-par-max="26" src="img/vip-460.webp" srcset="img/vip-384.webp 384w, img/vip-460.webp 460w" sizes="(max-width:760px) 45vw, 25vw" width="460" height="720" decoding="async" alt="Комната «Люкс» со своим столом" loading="lazy"><div><h3>Дни рождения</h3><i>по брони</i></div></article>
     </div>
     <div class="actions rv" style="margin-top:40px"><a class="btn" href="https://t.me/duplet_nsk" rel="noopener">Наш Telegram-канал</a></div>
   </div>
@@ -751,6 +764,7 @@ img[data-par]{height:calc(100% + 56px);margin-top:-28px;will-change:translate}
     box.hidden = true; if (analytics) loadAnalytics(); else if (analyticsLoaded) location.reload(); };
   box.querySelectorAll('[data-cookie]').forEach(b => b.addEventListener('click', () => save(b.dataset.cookie === 'all')));
   $('cookie-open').addEventListener('click', () => { box.hidden = false; box.querySelector('button').focus(); });
+  if (window.ResizeObserver) new ResizeObserver(() => document.documentElement.style.setProperty('--ck-h', box.offsetHeight + 'px')).observe(box);
   const saved = read();
   if (!saved) box.hidden = false; else if (saved.analytics) loadAnalytics();
 })();
@@ -816,8 +830,11 @@ const loadTimer=setTimeout(()=>giveUp(new Error('three.js: таймаут заг
 const earlyClick=e=>{ goBook(e.currentTarget.dataset?.book); giveUp(new Error('клик до загрузки сцены')); };
 const earlyEls=[hint,...document.querySelectorAll('[data-book]')];
 earlyEls.forEach(b=>b.addEventListener('click',earlyClick));
+if(matchMedia('(max-width:760px)').matches){   // телефон: запасной экран без 3D, это штатный режим, не ошибка
+  clearTimeout(loadTimer); earlyEls.forEach(b=>b.removeEventListener('click',earlyClick)); fallback();
+  await new Promise(()=>{});                     // сцена здесь не нужна: останавливаем модуль без исключения
+}
 try{
-  if(matchMedia('(max-width:760px)').matches) throw new Error('телефон: показываем запасной экран без 3D');
   const probe=document.createElement('canvas'); if(!(probe.getContext('webgl2')||probe.getContext('webgl'))) throw new Error('no webgl');
   const [t,re]=await Promise.race([Promise.all([import('three'),import('three/addons/environments/RoomEnvironment.js')]),abort]);
   THREE=t; RoomEnvironment=re.RoomEnvironment;
@@ -1081,6 +1098,7 @@ const beamTex=canvasTex(64,256,(g,w,h)=>{
   g.putImageData(img,0,0); });
 const bulbMat=new THREE.MeshBasicMaterial({color:0xFFE3B5});
 const beamMat=new THREE.MeshBasicMaterial({map:beamTex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false});
+const SCONCE_Y=1.5;   // было 1.05: на 1440 px лампа оказывалась прямо за буквой «П» заголовка
 function sconce(x,y,z,ry,light){
   const b=new THREE.Mesh(new THREE.BoxGeometry(.07,.1,.05),new THREE.MeshStandardMaterial({color:0x101615,roughness:.6})); b.position.set(x,y,z); b.rotation.y=ry; scene.add(b);
   const beam=new THREE.Mesh(new THREE.PlaneGeometry(.9,2.3),beamMat); beam.rotation.y=ry;
@@ -1089,8 +1107,8 @@ function sconce(x,y,z,ry,light){
   s.scale.set(.55,.55,1); s.position.set(x+Math.sin(ry)*.05,y,z+Math.cos(ry)*.05); scene.add(s);
   if(light){ const p=new THREE.PointLight(0xFFC27A,3,4.5,1.8); p.position.set(x+Math.sin(ry)*.25,y,z+Math.cos(ry)*.25); scene.add(p); }
 }
-for(const z of [-3,-1,1,3]) sconce(5.38,1.05,z,-Math.PI/2, z===-1||z===1);
-for(const x of [-3.2,-.8,1.6,3.8]){ sconce(x,1.05,-4.58,0, x===1.6); sconce(x,1.05,4.58,Math.PI, x===-.8); }
+for(const z of [-3,-1,1,3]) sconce(5.38,SCONCE_Y,z,-Math.PI/2, z===-1||z===1);
+for(const x of [-3.2,-.8,1.6,3.8]){ sconce(x,SCONCE_Y,-4.58,0, x===1.6); sconce(x,SCONCE_Y,4.58,Math.PI, x===-.8); }
 
 /* шары */
 function ballTexture(n){
